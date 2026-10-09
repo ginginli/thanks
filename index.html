@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanksgiving Host Calculator</title>
+    <!-- 引入 Tailwind CSS 进行极简 UI 布局 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 隐藏数字输入框的上下箭头，提升手机端体验 */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased p-4 md:p-8">
+
+    <div class="max-w-lg mx-auto space-y-6">
+        
+        <!-- 头部 -->
+        <header class="text-center space-y-2 mb-8">
+            <h1 class="text-3xl font-extrabold text-orange-600">HostCalc<span class="text-gray-800">.pro</span></h1>
+            <p class="text-gray-500 font-medium">Your Thanksgiving Feast Planner</p>
+        </header>
+
+        <!-- 第一步：输入变量 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="text-lg font-bold mb-4 flex items-center">
+                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">1</span> 
+                Who's Eating?
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Adults</label>
+                    <input type="number" id="adults" value="8" min="1" class="w-full bg-gray-50 border border-gray-200 text-xl font-bold p-3 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Kids (Under 12)</label>
+                    <input type="number" id="kids" value="2" min="0" class="w-full bg-gray-50 border border-gray-200 text-xl font-bold p-3 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-600 mb-1">Planned Dinner Time</label>
+                <input type="datetime-local" id="dinner-time" value="2026-11-26T16:00" class="w-full bg-gray-50 border border-gray-200 text-lg font-medium p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500">
+            </div>
+        </div>
+
+        <!-- 第二步：采购清单 (购物漏斗变现位) -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="text-lg font-bold mb-4 flex items-center">
+                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">2</span> 
+                Grocery Target
+            </h2>
+            <div class="flex items-center justify-between bg-orange-50 p-4 rounded-xl">
+                <div>
+                    <p class="text-sm text-orange-800 font-medium">Whole Turkey Needed</p>
+                    <p class="text-xs text-orange-600/70 mt-1">Includes allowance for leftovers</p>
+                </div>
+                <div class="text-3xl font-black text-orange-600">
+                    <span id="turkey-weight">14</span> <span class="text-lg font-bold">lbs</span>
+                </div>
+            </div>
+            <!-- 预留的 Instacart 或生鲜 CPS 联盟链接位置 -->
+            <a href="#" class="mt-3 block text-center text-sm text-gray-500 hover:text-orange-600 underline decoration-gray-300 underline-offset-4">
+                + Add to Instacart Delivery
+            </a>
+        </div>
+
+        <!-- 第三步：时间排期表 (厨具漏斗变现位) -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="text-lg font-bold mb-4 flex items-center">
+                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">3</span> 
+                Prep Schedule
+            </h2>
+            
+            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">
+                
+                <!-- 节点 1: 解冻 -->
+                <div class="relative flex items-start pl-8 md:pl-0">
+                    <div class="hidden md:block w-1/2 pr-6 text-right">
+                        <p class="text-sm font-bold text-gray-800" id="thaw-date">Nov 22, 4:00 PM</p>
+                        <p class="text-xs text-gray-500">Move to Fridge</p>
+                    </div>
+                    <div class="absolute left-0 md:left-1/2 w-5 h-5 rounded-full bg-blue-100 border-4 border-white transform md:-translate-x-1/2 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                    </div>
+                    <div class="md:hidden w-full pb-4">
+                        <p class="text-sm font-bold text-gray-800" id="thaw-date-mobile">Nov 22, 4:00 PM</p>
+                        <p class="text-xs text-gray-500">Start fridge thaw (<span id="thaw-days">3.5</span> days needed)</p>
+                    </div>
+                </div>
+
+                <!-- 节点 2: 烘烤 -->
+                <div class="relative flex items-start pl-8 md:pl-0">
+                    <div class="md:hidden w-full pb-4">
+                        <p class="text-sm font-bold text-gray-800" id="oven-date-mobile">Nov 26, 12:00 PM</p>
+                        <p class="text-xs text-gray-500">Put in oven (325°F / 165°C)</p>
+                    </div>
+                    <div class="hidden md:block w-1/2 pl-6 md:ml-auto">
+                        <p class="text-sm font-bold text-gray-800" id="oven-date">Nov 26, 12:00 PM</p>
+                        <p class="text-xs text-gray-500">Put in oven at 325°F</p>
+                    </div>
+                    <div class="absolute left-0 md:left-1/2 w-5 h-5 rounded-full bg-orange-100 border-4 border-white transform md:-translate-x-1/2 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- 节点 3: 测温静置 (Amazon 链接位) -->
+                <div class="relative flex items-start pl-8 md:pl-0">
+                    <div class="hidden md:block w-1/2 pr-6 text-right">
+                        <p class="text-sm font-bold text-gray-800" id="rest-date">Nov 26, 3:15 PM</p>
+                        <p class="text-xs text-gray-500">Take out & Rest</p>
+                    </div>
+                    <div class="absolute left-0 md:left-1/2 w-5 h-5 rounded-full bg-green-100 border-4 border-white transform md:-translate-x-1/2 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div class="md:hidden w-full pb-4">
+                        <p class="text-sm font-bold text-gray-800" id="rest-date-mobile">Nov 26, 3:15 PM</p>
+                        <p class="text-xs text-gray-500">Take out at 165°F and rest</p>
+                        <a href="#" class="inline-block mt-1 text-xs text-orange-600 font-medium">Get a reliable Meat Thermometer ➔</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const elAdults = document.getElementById('adults');
+        const elKids = document.getElementById('kids');
+        const elTime = document.getElementById('dinner-time');
+        const elWeight = document.getElementById('turkey-weight');
+        
+        // Mobile schedule elements
+        const elThawMobile = document.getElementById('thaw-date-mobile');
+        const elThawDays = document.getElementById('thaw-days');
+        const elOvenMobile = document.getElementById('oven-date-mobile');
+        const elRestMobile = document.getElementById('rest-date-mobile');
+
+        // Format Date to friendly string (e.g. "Nov 22, 4:00 PM")
+        function formatDateTime(dateObj) {
+            return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + 
+                   dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        }
+
+        // Core Calculation Engine
+        function calculateFeast() {
+            const adults = parseInt(elAdults.value) || 0;
+            const kids = parseInt(elKids.value) || 0;
+            const targetTime = new Date(elTime.value);
+
+            // 1. 食量计算：成人 1.5 磅 (预留剩菜)，儿童 0.75 磅
+            const totalLbs = Math.ceil((adults * 1.5) + (kids * 0.75));
+            elWeight.innerText = totalLbs;
+
+            // 2. 时间倒推逻辑
+            // 烘烤时间: 每磅约 15 分钟 (325华氏度下)
+            const cookMins = totalLbs * 15;
+            // 静置时间: 固定 45 分钟锁住汁水
+            const restingMins = 45;
+            
+            // 算出烤箱拿出来的时间 = 晚宴时间 - 静置时间
+            const restTime = new Date(targetTime.getTime() - restingMins * 60000);
+            
+            // 算出进烤箱的时间 = 拿出来的时间 - 烘烤时间
+            const ovenTime = new Date(restTime.getTime() - cookMins * 60000);
+
+            // 解冻时间: 冰箱冷藏解冻，每 4 磅需要 24 小时
+            const thawDays = totalLbs / 4;
+            // 算出开始解冻时间 = 进烤箱时间 - 解冻天数
+            const thawTime = new Date(ovenTime.getTime() - (thawDays * 24 * 60 * 60000));
+
+            // 3. 更新 UI
+            elThawMobile.innerText = formatDateTime(thawTime);
+            elThawDays.innerText = thawDays.toFixed(1);
+            elOvenMobile.innerText = formatDateTime(ovenTime);
+            elRestMobile.innerText = formatDateTime(restTime);
+            
+            // 桌面端双端渲染更新 (如果屏幕宽度足够，显示桌面排版)
+            document.getElementById('thaw-date').innerText = formatDateTime(thawTime);
+            document.getElementById('oven-date').innerText = formatDateTime(ovenTime);
+            document.getElementById('rest-date').innerText = formatDateTime(restTime);
+        }
+
+        // 绑定事件监听器：只要数值改变，实时触发计算，无须点击按钮
+        [elAdults, elKids, elTime].forEach(input => {
+            input.addEventListener('input', calculateFeast);
+        });
+
+        // 初始化计算一次
+        calculateFeast();
+    </script>
+</body>
+</html>

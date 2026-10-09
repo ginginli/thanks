@@ -1,47 +1,61 @@
-/* 
- * 🍎 苹果极简风格 + 🦃 感恩节暖色主题配置 
- * 将此配置放入你的全局样式表 (如 style.css) 中
- */
-:root {
-  /* -------------------------------------------
-     1. 基础结构色 (Apple Minimalist Base)
-     保持极简、克制、高对比度与护眼
-  ------------------------------------------- */
-  --color-bg: #F5F5F7;          /* 页面底色：经典 Apple 浅灰底 */
-  --color-surface: #FFFFFF;     /* 卡片底色：纯白，用于承载内容 */
-  --color-input-bg: #F2F2F7;    /* 输入框/控件底色：去边框设计的浅灰底 */
-  
-  --color-text-main: #1D1D1F;   /* 主标题文字：极深灰，比纯黑 (#000) 更柔和护眼 */
-  --color-text-muted: #86868B;  /* 次要文字/标签：经典 Apple 银灰色 */
-  --color-border: #E5E5EA;      /* 极浅的边框色（仅在必要时使用） */
+/* 全局重置 */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased; /* 苹果风格的字体平滑 */
+}
 
-  /* -------------------------------------------
-     2. 节日主题强调色 (Thanksgiving Theme)
-     感恩节的代表色：南瓜橙、火鸡烤色、秋叶色
-  ------------------------------------------- */
-  --color-primary: #E56020;         /* 主强调色：南瓜橙/火鸡烤色 (用于高亮数字、按钮) */
-  --color-primary-soft: #FFF0E8;    /* 主色浅化：极淡的橙色 (用于次要按钮背景或高亮卡片边框) */
-  --color-primary-hover: #CC551C;   /* 交互态：按钮悬停时的深橙色 */
+/* 主卡片样式 */
+.planner-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-apple-card);
+  padding: 24px;
+}
 
-  /* -------------------------------------------
-     3. 流程节点指示色 (Timeline Steps)
-     用于排期时间线的状态区分
-  ------------------------------------------- */
-  --color-step-1: #4382F6;      /* 步骤 1 (解冻)：冷水蓝，代表冷藏/冰水 */
-  --color-step-2: #E56020;      /* 步骤 2 (烘烤)：烤箱橙，与主色调一致 */
-  --color-step-3: #34C759;      /* 步骤 3 (出炉)：完成绿 (标准的 Apple 成功绿) */
+/* 无边框的大号输入框 */
+.apple-input {
+  background-color: var(--color-input-bg);
+  color: var(--color-text-main);
+  border-radius: var(--radius-input);
+  border: none;
+  padding: 12px;
+  font-weight: 600;
+  transition: box-shadow 0.2s ease;
+}
 
-  /* -------------------------------------------
-     4. 阴影与圆角规范 (Apple Style Effects)
-  ------------------------------------------- */
-  --shadow-apple-card: 0 4px 24px rgba(0, 0, 0, 0.04); /* 苹果风极其轻微的柔和扩散阴影 */
-  --shadow-apple-btn: 0 2px 8px rgba(229, 96, 32, 0.2);/* 主按钮的微发光阴影 */
-  
-  --radius-card: 24px;   /* 大圆角卡片 */
-  --radius-input: 16px;  /* 内部控件大圆角 */
-  
-  /* -------------------------------------------
-     5. 字体族规范 (System Fonts)
-  ------------------------------------------- */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+.apple-input:focus {
+  outline: none;
+  /* 聚焦时使用主题色作为光晕 */
+  box-shadow: 0 0 0 2px var(--color-primary); 
+}
+
+/* 强调文字 (如火鸡重量) */
+.text-highlight {
+  color: var(--color-primary);
+}
+
+/* 次要标签文字 */
+.label-muted {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em; /* 苹果常用的小标签宽字距 */
+}
+
+/* 主行动按钮 */
+.btn-primary {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--radius-input);
+  font-weight: 600;
+  border: none;
+  padding: 14px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
 }

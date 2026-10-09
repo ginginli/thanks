@@ -1,0 +1,100 @@
+# HostCalc Pro — Thanksgiving Feast Planner
+
+> Free online Thanksgiving calculator that works backwards from your dinner time: enter adults, children and a target dinner time, and get a reverse-engineered cooking timeline (thaw, oven, rest) plus a grocery list scaled to your exact headcount. All math runs locally in the browser — no sign-up, nothing uploaded.
+
+URL: https://www.hostcalc.pro/
+
+## What is HostCalc Pro?
+
+HostCalc Pro is a free online Thanksgiving calculator that works backwards from the moment you want to sit down for dinner. Tell it how many adults and children are coming and your target dinner time, and it reverse-engineers the entire evening: when to move the turkey from the freezer to the fridge, when it goes into the oven, and when to pull it at 165 °F — plus a complete Thanksgiving grocery list scaled to your exact headcount.
+
+## Key Features
+
+### Reverse schedule timeline
+
+Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting and thawing time from your dinner time and tells you exactly when to start each step — no mental math.
+
+### Grocery list scaled per person
+
+Turkey, stuffing, potatoes, veggie sides, cranberry sauce, cheese, appetizers, dinner rolls, pies and wine — each sized from per-person portion rules, in practical shopping units (lbs, oz, pieces, bottles).
+
+### Leftover planning built in
+
+One toggle adds a 30% turkey buffer, so tomorrow's sandwiches are already accounted for before you buy the bird.
+
+### Real-time, right in your browser
+
+Every input recalculates the timeline and grocery targets instantly. Nothing is uploaded, and there is nothing to sign up for.
+
+## How to Use
+
+1. Enter your headcount — adults, plus children under 12 (counted as half portions).
+2. Set your target dinner time — it defaults to Thanksgiving dinner at 4:00 PM and snaps back to the nearest Thanksgiving if cleared.
+3. Toggle leftovers on or off, then read your reverse schedule and grocery targets. Everything updates live as you type.
+
+## Why Choose HostCalc Pro?
+
+- It plans around your dinner time, not the bird. Reverse engineering means the schedule always lands exactly on your target hour.
+- Free, private, no sign-up. All calculations run locally in your browser — your guest list never leaves your device.
+- Shoppable units. Results come in pounds, ounces, pieces and bottles, ready for the grocery aisle.
+- Mobile-friendly. Pull up the timeline mid-store with one hand.
+
+## Calculation formulas
+
+### Per-person portion sizes
+
+Per equivalent adult (children under 12 count as half):
+
+- Whole turkey: 1.5 lb per equivalent adult, plus 30% if leftovers are wanted
+- Stuffing: 0.25 lb (4 oz) per person
+- Potatoes: 0.33 lb (about 150 g) per person
+- Veggie sides: 3.5 oz per person
+- Cranberry sauce: 2 US fl oz per person
+- Cheese: 2 oz per person
+- Appetizers: 7 pieces per person
+- Dinner rolls: 2 per adult, 1 per child
+- Pies: one 9-inch pie per 6 equivalent adults
+- Wine: 0.71 liters (about 24 fl oz) per adult; children are not counted for wine
+
+### Reverse schedule rules
+
+- Resting: pull the bird 45 minutes before dinner, at 165 °F internal temperature.
+- Roasting: at 325 °F / 165 °C following the USDA weight timetable — about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds.
+- Thawing: fridge thaw takes one day per 4 lbs of turkey.
+- Thanksgiving is defined as the 4th Thursday of November (dinner at 4:00 PM by default).
+
+## FAQ
+
+### How much turkey do I need per person?
+
+Plan on 1.5 lbs of whole turkey per adult; children under 12 count as half. For 8 adults and 2 kids, that's a 17–18 lb bird. Turn on leftovers for a 30% buffer.
+
+### When should I move my turkey to the fridge to thaw?
+
+Fridge thawing takes about one day per 4 lbs, so a 17.6 lb turkey needs roughly 4.4 days, per the USDA safe thawing guide. HostCalc Pro back-calculates the exact date and time from your dinner time.
+
+### How long does a turkey take to cook?
+
+At 325 °F / 165 °C, we follow the USDA weight timetable — roughly 13 minutes per pound for large birds (20+ lb) up to 22 minutes per pound for small ones — then rest the bird for 45 minutes after pulling it at 165 °F internal temperature, the safe minimum recommended by the USDA FSIS.
+
+### Do children eat as much as adults?
+
+No — each child under 12 is counted as half an adult across the grocery list, except for dinner rolls (one per child) and wine (adults only).
+
+### Is my data stored anywhere?
+
+No. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent to any server.
+
+### What portion sizes does the calculator use per person?
+
+Per equivalent adult (children under 12 count as half): 1.5 lb whole turkey (plus 30% if you want leftovers), 0.25 lb (4 oz) stuffing, 0.33 lb (about 150 g) potatoes, 3.5 oz veggie sides, 2 US fl oz cranberry sauce, 2 oz cheese, 7 pieces of appetizers, and one 9-inch pie per 6 people. Dinner rolls are 2 per adult and 1 per child; wine is 0.71 liters (about 24 fl oz) per adult, and children are not counted for wine.
+
+### How does the reverse schedule work?
+
+We subtract backwards from your dinner time: first pull the bird 45 minutes early to rest; before that, roast at 325 °F following the USDA weight timetable (about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds); and before that, fridge-thaw at one day per 4 lbs. The result is the exact date and time to move your turkey into the fridge.
+
+## Metadata
+
+- Sitemap: https://www.hostcalc.pro/sitemap.xml
+- Robots: https://www.hostcalc.pro/robots.txt
+- Contact: hello@hostcalc.pro

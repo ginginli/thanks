@@ -1,0 +1,13 @@
+# HostCalc Pro
+
+> Free online Thanksgiving calculator that works backwards from your dinner time: enter adults, children and a target dinner time, and get a reverse-engineered cooking timeline (thaw, oven, rest) plus a grocery list scaled to your exact headcount. All math runs locally in the browser — no sign-up, nothing uploaded.
+
+Main content:
+
+- [Thanksgiving Feast Planner](https://www.hostcalc.pro/): The interactive calculator — reverse schedule timeline, per-person grocery quantities, leftover planning, and one-click calendar reminders (.ics / Google Calendar).
+
+Metadata:
+
+- [Sitemap](https://www.hostcalc.pro/sitemap.xml)
+- [Robots](https://www.hostcalc.pro/robots.txt)
+- [Full content](https://www.hostcalc.pro/llms-full.txt)

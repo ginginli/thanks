@@ -126,6 +126,8 @@ body {
 header {
     text-align: center;
     padding: var(--spacing-md) 0;
+    /* LCP element animates transform only — opacity animations delay LCP */
+    animation: header-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 header h1 {
@@ -167,6 +169,7 @@ header p {
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: var(--spacing-lg);
+    animation: rise-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .section-title {
@@ -193,9 +196,18 @@ header p {
     font-weight: 700;
 }
 
+.icon-badge.step-1 { background-color: var(--color-step-1); }
+.icon-badge.step-2 { background-color: var(--color-step-2); }
+.icon-badge.step-3 { background-color: var(--color-step-3); }
+.icon-badge.neutral { background-color: var(--color-text-main); }
+
+.input-group-time {
+    margin-top: 16px;
+}
+
 .input-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-md);
 }
@@ -297,41 +309,6 @@ input[type="number"]::-webkit-outer-spin-button {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    flex-shrink: 0;
-    padding: 7px 0;   /* expands tap target to 44px height */
-    margin: -7px 0;   /* compensates layout shift */
-}
-
-.switch input { opacity: 0; width: 0; height: 0; }
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: var(--color-border);
-    transition: .3s;
-    border-radius: 30px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px; width: 26px;
-    left: 2px; bottom: 2px;
-    background-color: white;
-    transition: .3s;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-input:checked + .slider { background-color: var(--color-primary); }
-input:checked + .slider:before { transform: translateX(20px); }
 
 .timeline {
     position: relative;
@@ -457,6 +434,9 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: var(--color-text-main);
 }
 
+/* Shared link treatment (blog prose, header back-link, in-card hints) */
+.prose a,
+header a,
 .serving-hint a {
     color: var(--color-primary);
     font-weight: 500;
@@ -492,13 +472,6 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 /* Blog */
-.prose a,
-header a,
-.site-footer a {
-    color: var(--color-primary);
-    font-weight: 500;
-}
-
 .blog-teaser {
     margin-top: 14px;
     padding-top: 14px;
@@ -519,6 +492,11 @@ header a,
 
 .blog-cta:hover {
     background-color: var(--color-primary-hover);
+}
+
+.g-note {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
 }
 
 .grocery-card {
@@ -624,15 +602,6 @@ header a,
 @keyframes rise-in {
     from { opacity: 0; transform: translateY(18px); }
     to { opacity: 1; transform: none; }
-}
-
-/* LCP element (header) animates transform only — opacity animations delay LCP */
-header {
-    animation: header-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.card {
-    animation: rise-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes header-rise {

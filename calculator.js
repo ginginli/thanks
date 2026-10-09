@@ -6,6 +6,8 @@
  *
  * Model assumptions (aligned with omnicalculator.com/food/thanksgiving):
  *  - Children (under 12) eat roughly half an adult portion.
+ *  - Big eaters (teens, athletes) eat about 1.5 adult portions; they are
+ *    counted like adults for rolls but not for wine.
  *  - Whole turkey: 1.5 lbs per equivalent adult.
  *  - Leftovers: "light" buffers the turkey, potatoes and dinner rolls by
  *    +30% (the most fought-over take-home dishes); "heavy" scales the
@@ -87,6 +89,7 @@
     }
 
     const MINUTE_MS = 60 * 1000;
+    const BIG_EATER_MULT = 1.5;      // a teen/athlete eats ~1.5 adult portions
 
     /* --- Date helpers --- */
     const pad = (n) => String(n).padStart(2, '0');
@@ -117,6 +120,7 @@
      * @param {Object} params
      * @param {number} params.adults       Number of adults.
      * @param {number} params.children     Number of children (under 12).
+     * @param {number} [params.bigEaters]  Teens/athletes, ~1.5 adults each.
      * @param {string} [params.leftoverMode] 'none' | 'light' (+30% turkey,
      *        potatoes, rolls) |
      *        'heavy' (+50% on everything). Legacy boolean `leftovers` still
@@ -124,13 +128,14 @@
      * @param {Date} params.dinnerTime     Target sit-down time.
      * @returns {Object} grocery quantities + timeline milestones.
      */
-    function planFeast({ adults = 0, children = 0, leftovers = undefined, leftoverMode = undefined, dinnerTime }) {
+    function planFeast({ adults = 0, children = 0, bigEaters = 0, leftovers = undefined, leftoverMode = undefined, dinnerTime }) {
         const A = Number(adults) || 0;
         const C = Number(children) || 0;
+        const B = Number(bigEaters) || 0;
         const target = dinnerTime instanceof Date ? dinnerTime : new Date(dinnerTime);
 
-        // Equivalent adults: children count as half
-        const E = A + (C / 2);
+        // Equivalent adults: children count as half, big eaters count as 1.5
+        const E = A + (B * BIG_EATER_MULT) + (C / 2);
 
         const mode = leftoverMode || (leftovers === true ? 'light' : 'none');
         const { turkey: turkeyMult, hotSides: hotSideMult, sides: sideMult } =
@@ -147,7 +152,7 @@
             cranberryFlOz: E * RATIOS.cranberryFlOzPerAdult * sideMult,
             cheeseOz: E * RATIOS.cheeseOzPerAdult * sideMult,
             appetizers: Math.ceil(E * RATIOS.appetizersPerAdult * sideMult),
-            rolls: Math.ceil((A * RATIOS.rollsPerAdult + C * RATIOS.rollsPerChild) * hotSideMult),
+            rolls: Math.ceil(((A + B) * RATIOS.rollsPerAdult + C * RATIOS.rollsPerChild) * hotSideMult),
             pies: Math.max(1, Math.ceil(E * sideMult / RATIOS.piesPerAdults)),
             wineBottles: A * RATIOS.wineLitersPerAdult * sideMult / WINE_BOTTLE_LITERS
         };
@@ -173,6 +178,33 @@
         };
 
         return { equivalentAdults: E, grocery, timeline };
+    }
+
+    /* --- Practical retail units --- */
+
+    /**
+     * Round grocery quantities up to the units stores actually sell them in
+     * — the "half batches aren't worth the fuss" economy (see the blog).
+     * Returns short hint strings keyed by grocery output; empty string = no
+     * practical hint for that item.
+     */
+    function practicalNotes(grocery) {
+        const plural = (n, unit) => {
+            if (n === 1) return `1 ${unit}`;
+            return `${n} ${unit.endsWith('box') ? 'boxes' : unit + 's'}`;
+        };
+        return {
+            turkey: `≈ a ${Math.ceil(grocery.turkeyLbs)} lb bird`,
+            stuffing: `≈ ${plural(Math.ceil(grocery.stuffingLbs * 16 / 6), '6-oz box')}`,
+            potatoes: `≈ ${plural(Math.ceil(grocery.potatoesLbs / 5), '5-lb bag')}`,
+            veggies: `≈ ${plural(Math.ceil(grocery.veggiesOz / 16), '1-lb bag')}`,
+            cranberry: `≈ ${plural(Math.ceil(grocery.cranberryFlOz / 12), '14-oz can')}`,
+            cheese: `≈ ${plural(Math.ceil(grocery.cheeseOz / 8), '8-oz block')}`,
+            rolls: `≈ ${Math.ceil(grocery.rolls / 12)} dozen`,
+            appetizers: '',
+            pies: '',
+            wine: ''
+        };
     }
 
     /* --- Formatting helpers --- */
@@ -287,6 +319,7 @@
     const api = {
         RATIOS,
         WINE_BOTTLE_LITERS,
+        BIG_EATER_MULT,
         LEFTOVER_MODES,
         REST_MINUTES,
         THAW_DAYS_PER_LB,
@@ -297,6 +330,7 @@
         thanksgivingOf,
         nearestThanksgiving,
         planFeast,
+        practicalNotes,
         formatNum,
         formatDate,
         buildGoogleCalendarUrl,

@@ -15,10 +15,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HostCalc Pro - Thanksgiving Feast Planner</title>
 
-    <meta name="description" content="Thanksgiving calculator that works backwards from dinner time: get your turkey thaw and oven schedule, plus a grocery list scaled to your guests.">
+    <meta name="description" content="Thanksgiving calculator that works backwards from dinner time: your turkey thaw and oven schedule, plus a grocery list scaled to your guests — a smart starting point you then adjust to the people you know best.">
+    <meta name="keywords" content="thanksgiving calculator, turkey calculator, how long to thaw a turkey, turkey thaw time, how long to cook a turkey, turkey cook time calculator, turkey size per person, thanksgiving grocery list, thanksgiving dinner planner, thanksgiving timeline, turkey leftovers">
 
     <meta property="og:title" content="HostCalc Pro - Thanksgiving Feast Planner">
-    <meta property="og:description" content="Reverse-engineer your Thanksgiving: thaw timeline, oven schedule, and grocery quantities scaled to your guest count.">
+    <meta property="og:description" content="Reverse-engineer your Thanksgiving: thaw timeline, oven schedule, and grocery quantities scaled to your guests — then pad for the big eaters and the to-go plates.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.hostcalc.pro/">
     <meta property="og:site_name" content="HostCalc Pro">
@@ -95,10 +96,18 @@
             },
             {
                 "@type": "Question",
+                "name": "How much do teenagers eat at Thanksgiving?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Count teens and athletes as big eaters — about 1.5 adults' worth of food each. Use the Big Eaters field (not the regular Adults box) so the food scales up without inflating the wine count."
+                }
+            },
+            {
+                "@type": "Question",
                 "name": "Is my data stored anywhere?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "No. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent to any server."
+                    "text": "Not on any server. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent anywhere. The only thing saved is your latest plan, stored on your own device (localStorage) so you can reuse it next year or hand it over via the share link. Clearing your browser data removes it."
                 }
             },
             {
@@ -106,7 +115,7 @@
                 "name": "What portion sizes does the calculator use per person?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Per equivalent adult (children under 12 count as half): 1.5 lb whole turkey (plus 30% if you want leftovers), 0.25 lb (4 oz) stuffing, 0.33 lb (about 150 g) potatoes, 3.5 oz veggie sides, 2 US fl oz cranberry sauce, 2 oz cheese, 7 pieces of appetizers, and one 9-inch pie per 6 people. Dinner rolls are 2 per adult and 1 per child; wine is 0.71 liters (about 24 fl oz) per adult, and children are not counted for wine."
+                    "text": "Per equivalent adult (children under 12 count as half, big eaters like teens and athletes count as 1.5): 1.5 lb whole turkey, 0.25 lb (4 oz) stuffing, 0.33 lb (about 150 g) potatoes, 3.5 oz veggie sides, 2 US fl oz cranberry sauce, 2 oz cheese, 7 pieces of appetizers, and one 9-inch pie per 6 people. Dinner rolls are 2 per adult (big eaters included) and 1 per child. Wine is 0.71 liters (about 24 fl oz) per regular adult only — big eaters and children don't add wine. Leftover modes: Some adds +30% to the turkey, potatoes and rolls; Heavy adds +50% to everything."
                 }
             },
             {
@@ -200,7 +209,7 @@
         
         <header>
             <h1>HostCalc<span class="h1-accent">.pro</span> <span class="h1-keyword">Thanksgiving Feast Planner</span></h1>
-            <p>Thanksgiving Reverse Schedule & Grocery Scale</p>
+            <p>Reverse-engineer the big day: a thaw timeline, an oven schedule, and grocery math — a starting scaffold, not a prophecy. You know your family best.</p>
         </header>
 
         <!-- Step 1: Parameters -->
@@ -219,9 +228,13 @@
                     <label class="input-label" for="children">Children (under 12)</label>
                     <input type="number" id="children" class="apple-input" value="2" min="0">
                 </div>
+                <div class="input-group">
+                    <label class="input-label" for="big-eaters">Big Eaters (teens &amp; athletes)</label>
+                    <input type="number" id="big-eaters" class="apple-input" value="0" min="0">
+                </div>
             </div>
 
-            <div class="input-group" style="margin-top: 16px;">
+            <div class="input-group input-group-time">
                 <label class="input-label" for="dinner-time">Target Dinner Time</label>
                 <input type="datetime-local" id="dinner-time" class="apple-input" value="2026-11-26T16:00">
             </div>
@@ -264,7 +277,7 @@
         <!-- Step 2: Timeline -->
         <section class="card" id="step-timeline">
             <h2 class="section-title">
-                <span class="icon-badge" style="background-color: var(--color-step-1);">2</span> 
+                <span class="icon-badge step-1">2</span>
                 Reverse Schedule Timeline
             </h2>
 
@@ -310,7 +323,7 @@
         <!-- Step 3: Groceries -->
         <section class="card" id="step-groceries">
             <h2 class="section-title">
-                <span class="icon-badge" style="background-color: var(--color-text-main);">3</span> 
+                <span class="icon-badge neutral">3</span>
                 Grocery Targets
             </h2>
 
@@ -320,6 +333,7 @@
                     <div>
                         <div class="g-icon">🦃</div>
                         <div class="g-name">Whole Turkey</div>
+                        <div class="g-note" id="n-turkey"></div>
                     </div>
                     <div class="g-value"><span id="g-turkey">17.6</span> <span class="g-unit">lbs</span></div>
                 </div>
@@ -328,30 +342,35 @@
                     <div class="g-icon">🍞</div>
                     <div class="g-name">Stuffing</div>
                     <div class="g-value"><span id="g-stuffing">2.3</span> <span class="g-unit">lbs</span></div>
+                    <div class="g-note" id="n-stuffing"></div>
                 </div>
 
                 <div class="grocery-card">
                     <div class="g-icon">🥔</div>
                     <div class="g-name">Potatoes</div>
                     <div class="g-value"><span id="g-potatoes">3.0</span> <span class="g-unit">lbs</span></div>
+                    <div class="g-note" id="n-potatoes"></div>
                 </div>
 
                 <div class="grocery-card">
                     <div class="g-icon">🥦</div>
                     <div class="g-name">Veggie Sides</div>
                     <div class="g-value"><span id="g-veggies">31.5</span> <span class="g-unit">oz</span></div>
+                    <div class="g-note" id="n-veggies"></div>
                 </div>
 
                 <div class="grocery-card">
                     <div class="g-icon">🍒</div>
                     <div class="g-name">Cranberry Sauce</div>
                     <div class="g-value"><span id="g-cranberry">18</span> <span class="g-unit">fl oz</span></div>
+                    <div class="g-note" id="n-cranberry"></div>
                 </div>
 
                 <div class="grocery-card">
                     <div class="g-icon">🧀</div>
                     <div class="g-name">Cheese</div>
                     <div class="g-value"><span id="g-cheese">18</span> <span class="g-unit">oz</span></div>
+                    <div class="g-note" id="n-cheese"></div>
                 </div>
 
                 <div class="grocery-card">
@@ -364,6 +383,7 @@
                     <div class="g-icon">🥐</div>
                     <div class="g-name">Dinner Rolls</div>
                     <div class="g-value"><span id="g-rolls">18</span> <span class="g-unit">rolls</span></div>
+                    <div class="g-note" id="n-rolls"></div>
                 </div>
 
                 <div class="grocery-card">
@@ -390,16 +410,17 @@
 
             <section class="card prose">
                 <h2 class="section-title">
-                    <span class="icon-badge" style="background-color: var(--color-primary);">?</span>
+                    <span class="icon-badge">?</span>
                     What is HostCalc Pro?
                 </h2>
                 <p><strong>HostCalc Pro</strong> is a free online <strong>Thanksgiving calculator</strong> that works backwards from the moment you want to sit down for dinner. Tell it how many adults and children are coming and your target dinner time, and it reverse-engineers the entire evening: when to move the turkey from the freezer to the fridge, when it goes into the oven, and when to pull it at 165 °F — plus a complete <strong>Thanksgiving grocery list</strong> scaled to your exact headcount.</p>
+                <p>Think of it as <strong>a scaffold for first-time hosts, not a prophecy</strong>: the math gets you in the neighborhood, and the leftover modes and big-eater controls let you adjust for the uncle who takes thirds and the aunt who always packs a plate. Experience still beats any calculator — ours just saves you the guesswork on year one.</p>
                 <p class="blog-teaser">📖 From our blog: <a href="/blog/thanksgiving-for-25/">How a Midwestern Mom Cooks Thanksgiving for 25</a> — the real-world lessons no portion calculator can teach.</p>
             </section>
 
             <section class="card prose">
                 <h2 class="section-title">
-                    <span class="icon-badge" style="background-color: var(--color-step-1);">★</span>
+                    <span class="icon-badge step-1">★</span>
                     Key Features
                 </h2>
                 <h3>Reverse schedule timeline</h3>
@@ -414,7 +435,7 @@
 
             <section class="card prose">
                 <h2 class="section-title">
-                    <span class="icon-badge" style="background-color: var(--color-step-2);">1</span>
+                    <span class="icon-badge step-2">1</span>
                     How to Use
                 </h2>
                 <ol>
@@ -426,7 +447,7 @@
 
             <section class="card prose">
                 <h2 class="section-title">
-                    <span class="icon-badge" style="background-color: var(--color-step-3);">✓</span>
+                    <span class="icon-badge step-3">✓</span>
                     Why Choose HostCalc Pro?
                 </h2>
                 <ul>
@@ -439,12 +460,12 @@
 
             <section class="card prose">
                 <h2 class="section-title">
-                    <span class="icon-badge" style="background-color: var(--color-text-main);">Q</span>
+                    <span class="icon-badge neutral">Q</span>
                     FAQ
                 </h2>
 
                 <h3>How much turkey do I need per person?</h3>
-                <p>Plan on <strong>1.5 lbs of whole turkey per adult</strong>; children under 12 count as half. For 8 adults and 2 kids, that's a 17–18 lb bird. Turn on leftovers for a 30% buffer.</p>
+                <p>Plan on <strong>1.5 lbs of whole turkey per adult</strong>; children under 12 count as half, teens and athletes count as 1.5. For 8 adults and 2 kids, that's a 17–18 lb bird. Pick a leftover mode: <strong>Some +30%</strong> buffers the turkey, potatoes and dinner rolls (the most fought-over leftovers), while <strong>Heavy +50%</strong> scales everything for to-go plates and big eaters.</p>
 
                 <h3>When should I move my turkey to the fridge to thaw?</h3>
                 <p>Fridge thawing takes about <strong>one day per 4 lbs</strong>, so a 17.6 lb turkey needs roughly 4.4 days, per the <a href="https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/turkey-farm-table" target="_blank" rel="noopener">USDA safe thawing guide</a>. HostCalc Pro back-calculates the exact date and time from your dinner time.</p>
@@ -455,11 +476,14 @@
                 <h3>Do children eat as much as adults?</h3>
                 <p>No — each child under 12 is counted as half an adult across the grocery list, except for dinner rolls (one per child) and wine (adults only).</p>
 
+                <h3>How much do teenagers eat at Thanksgiving?</h3>
+                <p>Count teens and athletes as <strong>big eaters</strong> — about 1.5 adults' worth of food each. Use the Big Eaters field (not the regular Adults box) so the food scales up without inflating the wine count.</p>
+
                 <h3>Is my data stored anywhere?</h3>
-                <p>No. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent to any server.</p>
+                <p>Not on any server. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent anywhere. The only thing saved is your latest plan, stored <strong>on your own device</strong> (browser localStorage) so you can reuse it next year or hand it over via the share link. Clearing your browser data removes it.</p>
 
                 <h3>What portion sizes does the calculator use per person?</h3>
-                <p>Per equivalent adult (children under 12 count as half): <strong>1.5 lb</strong> whole turkey (plus 30% if you want leftovers), <strong>0.25 lb</strong> (4 oz) stuffing, <strong>0.33 lb</strong> (about 150 g) potatoes, <strong>3.5 oz</strong> veggie sides, <strong>2 fl oz</strong> cranberry sauce, <strong>2 oz</strong> cheese, <strong>7 pieces</strong> of appetizers, and one 9-inch pie per <strong>6 people</strong>. Dinner rolls are 2 per adult and 1 per child; wine is <strong>0.71 liters</strong> (about 24 fl oz) per adult, and children are not counted for wine.</p>
+                <p>Per equivalent adult (children under 12 count as half, big eaters like teens and athletes count as 1.5): <strong>1.5 lb</strong> whole turkey, <strong>0.25 lb</strong> (4 oz) stuffing, <strong>0.33 lb</strong> (about 150 g) potatoes, <strong>3.5 oz</strong> veggie sides, <strong>2 fl oz</strong> cranberry sauce, <strong>2 oz</strong> cheese, <strong>7 pieces</strong> of appetizers, and one 9-inch pie per <strong>6 people</strong>. Dinner rolls are 2 per adult (big eaters included) and 1 per child. Wine is <strong>0.71 liters</strong> (about 24 fl oz) per regular adult only — big eaters and children don't add wine. Leftover modes: <strong>Some</strong> adds +30% to the turkey, potatoes and rolls; <strong>Heavy</strong> adds +50% to everything.</p>
 
                 <h3>How does the reverse schedule work?</h3>
                 <p>We subtract backwards from your dinner time: first pull the bird <strong>45 minutes</strong> early to rest; before that, roast at 325 °F following the <strong>USDA weight timetable</strong> (about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds); and before that, fridge-thaw at <strong>one day per 4 lbs</strong>. The result is the exact date and time to move your turkey into the fridge.</p>
@@ -479,13 +503,14 @@
     <script src="calculator.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const { planFeast, nearestThanksgiving, toInputValue, formatNum, formatDate,
+            const { planFeast, practicalNotes, nearestThanksgiving, toInputValue, formatNum, formatDate,
                     buildGoogleCalendarUrl, buildICS, milestoneEvents } = ThanksgivingPlanner;
 
             // 1. Map all interactive DOM elements
             const inputs = {
                 adults: document.getElementById('adults'),
                 children: document.getElementById('children'),
+                bigEaters: document.getElementById('big-eaters'),
                 time: document.getElementById('dinner-time')
             };
             const leftoverRadios = Array.from(document.querySelectorAll('input[name="leftovers"]'));
@@ -501,6 +526,16 @@
                 rolls: document.getElementById('g-rolls'),
                 pies: document.getElementById('g-pies'),
                 wine: document.getElementById('g-wine')
+            };
+
+            const noteEls = {
+                turkey: document.getElementById('n-turkey'),
+                stuffing: document.getElementById('n-stuffing'),
+                potatoes: document.getElementById('n-potatoes'),
+                veggies: document.getElementById('n-veggies'),
+                cranberry: document.getElementById('n-cranberry'),
+                cheese: document.getElementById('n-cheese'),
+                rolls: document.getElementById('n-rolls')
             };
 
             const timeline = {
@@ -540,6 +575,7 @@
                 const { grocery, timeline: tl } = planFeast({
                     adults: inputs.adults.value,
                     children: inputs.children.value,
+                    bigEaters: inputs.bigEaters.value,
                     leftoverMode,
                     dinnerTime: targetDinnerTime
                 });
@@ -556,14 +592,21 @@
                 outputs.pies.textContent = grocery.pies;
                 outputs.wine.textContent = formatNum(grocery.wineBottles);
 
+                // A''. Retail-unit hints (5-lb bags, 6-oz boxes, dozens...)
+                const notes = practicalNotes(grocery);
+                for (const key of Object.keys(noteEls)) noteEls[key].textContent = notes[key];
+
                 // A'. Small-party tip: for 1-2 guests a turkey breast beats a whole bird
-                const headcount = (parseInt(inputs.adults.value) || 0) + (parseInt(inputs.children.value) || 0);
+                const headcount = (parseInt(inputs.adults.value) || 0)
+                    + (parseInt(inputs.bigEaters.value) || 0)
+                    + (parseInt(inputs.children.value) || 0);
                 breastHint.hidden = headcount > 2;
 
                 // D. Remember this plan for next year's host (you)
                 try {
                     localStorage.setItem(STORAGE_KEY, JSON.stringify({
                         a: inputs.adults.value,
+                        b: inputs.bigEaters.value,
                         c: inputs.children.value,
                         t: inputs.time.value,
                         l: leftoverRadios.find(r => r.checked)?.value || 'none'
@@ -610,6 +653,7 @@
             // 4. "Ask the previous host": shared links + local memory
             const applyParams = (params) => {
                 if (params.get('a')) inputs.adults.value = params.get('a');
+                if (params.get('b')) inputs.bigEaters.value = params.get('b');
                 if (params.get('c')) inputs.children.value = params.get('c');
                 if (params.get('t')) inputs.time.value = params.get('t');
                 const mode = params.get('l');
@@ -619,6 +663,7 @@
             shareButton.addEventListener('click', async () => {
                 const params = new URLSearchParams({
                     a: inputs.adults.value,
+                    b: inputs.bigEaters.value,
                     c: inputs.children.value,
                     t: inputs.time.value,
                     l: leftoverRadios.find(r => r.checked)?.value || 'none'
@@ -646,10 +691,15 @@
             } else {
                 try {
                     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-                    if (saved && ((parseInt(saved.a) || 0) + (parseInt(saved.c) || 0)) > 0) {
+                    if (saved && ((parseInt(saved.a) || 0) + (parseInt(saved.b) || 0) + (parseInt(saved.c) || 0)) > 0) {
                         const a = parseInt(saved.a) || 0;
+                        const b = parseInt(saved.b) || 0;
                         const c = parseInt(saved.c) || 0;
-                        restoreDesc.textContent = `${a} adult${a === 1 ? '' : 's'} + ${c} kid${c === 1 ? '' : 's'}`;
+                        const parts = [];
+                        if (a) parts.push(`${a} adult${a === 1 ? '' : 's'}`);
+                        if (b) parts.push(`${b} big eater${b === 1 ? '' : 's'}`);
+                        if (c) parts.push(`${c} kid${c === 1 ? '' : 's'}`);
+                        restoreDesc.textContent = parts.join(' + ');
                         restoreHint.hidden = false;
                         restoreLink.addEventListener('click', (e) => {
                             e.preventDefault();

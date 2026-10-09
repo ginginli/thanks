@@ -47,6 +47,7 @@
         heavy: { turkey: 1.5, hotSides: 1.5, sides: 1.5 }
     };
     const REST_MINUTES = 45;          // turkey resting time
+    const TEMPER_MINUTES = 30;        // take the bird out of the fridge ~30 min before roasting
     const THAW_DAYS_PER_LB = 1 / 4;   // fridge thaw: 1 day per 4 lbs
     const WATER_THAW_MIN_PER_LB = 30; // cold-water thaw: 30 min per lb, change water every 30 min
 
@@ -221,13 +222,17 @@
         const cookMinutes = roastMinutesForWeight(turkeyLbs);
         const timeToOven = new Date(timeToRest.getTime() - cookMinutes * MINUTE_MS);
 
+        // 2'. Temper: take the bird out of the fridge ~30 min before roasting
+        const timeToTemper = new Date(timeToOven.getTime() - TEMPER_MINUTES * MINUTE_MS);
+
         // 3. Thaw: fridge thaw = 1 day per 4 lbs
         const thawDays = turkeyLbs * THAW_DAYS_PER_LB;
-        const timeToThaw = new Date(timeToOven.getTime() - thawDays * 24 * 60 * MINUTE_MS);
+        const timeToThaw = new Date(timeToTemper.getTime() - thawDays * 24 * 60 * MINUTE_MS);
 
         const timeline = {
             restAt: timeToRest,
             ovenAt: timeToOven,
+            temperAt: timeToTemper,
             thawAt: timeToThaw,
             thawDays,
             cookMinutes
@@ -353,6 +358,14 @@
                 details: `Fridge thaw needs about ${formatNum(plan.timeline.thawDays)} days (1 day per 4 lb). Planned with HostCalc Pro.`
             },
             {
+                uid: 'temper',
+                title: `Take ${lb} lb turkey out of the fridge to temper`,
+                start: plan.timeline.temperAt,
+                end: at(plan.timeline.temperAt, 30),
+                details: 'Let the bird sit ~30 minutes at room temperature so it roasts evenly. Planned with HostCalc Pro.',
+                reminder: '-PT15M'
+            },
+            {
                 uid: 'oven',
                 title: `Put ${lb} lb turkey in the oven (325°F / 165°C)`,
                 start: plan.timeline.ovenAt,
@@ -383,6 +396,7 @@
         BIG_EATER_MULT,
         LEFTOVER_MODES,
         REST_MINUTES,
+        TEMPER_MINUTES,
         THAW_DAYS_PER_LB,
         WATER_THAW_MIN_PER_LB,
         coldWaterThawMinutes,

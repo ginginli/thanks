@@ -299,6 +299,15 @@
                 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-2"></div>
+                    <div class="timeline-date" id="time-temper">Thu, Nov 26, 10:16 AM</div>
+                    <div class="timeline-desc">Take turkey out of the fridge to temper (30 mins)
+                        <a class="cal-link" id="gcal-temper" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
+                    <div class="timeline-note">Bringing the bird close to room temperature helps it cook evenly — 30 minutes is enough; never leave it out longer than two hours (food safety).</div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot dot-2"></div>
                     <div class="timeline-date" id="time-oven">Thu, Nov 26, 10:46 AM</div>
                     <div class="timeline-desc">Put turkey in oven at 325°F / 165°C
                         <a class="cal-link" id="gcal-oven" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
@@ -330,7 +339,7 @@
 
             <div class="cal-footer">
                 <button type="button" class="btn-outline" id="ics-download">Download calendar file (.ics)</button>
-                <span class="cal-hint">All 4 events with pop-up reminders — imports into Google, Apple or Outlook Calendar</span>
+                <span class="cal-hint">All 5 events with pop-up reminders — imports into Google, Apple or Outlook Calendar</span>
             </div>
         </section>
 
@@ -560,12 +569,14 @@
             const timeline = {
                 thawDate: document.getElementById('time-thaw'),
                 thawDays: document.getElementById('days-thaw'),
+                temperDate: document.getElementById('time-temper'),
                 ovenDate: document.getElementById('time-oven'),
                 restDate: document.getElementById('time-rest')
             };
 
             const gcalLinks = {
                 thaw: document.getElementById('gcal-thaw'),
+                temper: document.getElementById('gcal-temper'),
                 oven: document.getElementById('gcal-oven'),
                 rest: document.getElementById('gcal-rest')
             };
@@ -642,10 +653,11 @@
                     }));
                 } catch (err) { /* private mode / storage disabled */ }
 
-                // B. Timeline
-                timeline.restDate.textContent = formatDate(tl.restAt);
-                timeline.ovenDate.textContent = formatDate(tl.ovenAt);
-                timeline.thawDate.textContent = formatDate(tl.thawAt);
+            // B. Timeline
+            timeline.restDate.textContent = formatDate(tl.restAt);
+            timeline.ovenDate.textContent = formatDate(tl.ovenAt);
+            timeline.temperDate.textContent = formatDate(tl.temperAt);
+            timeline.thawDate.textContent = formatDate(tl.thawAt);
                 timeline.thawDays.textContent = formatNum(tl.thawDays);
 
                 // B'. Side-dish start times: day-before items get a weekday
@@ -667,8 +679,9 @@
                 // C. Calendar links follow the current plan
                 const events = milestoneEvents({ grocery, timeline: tl }, targetDinnerTime);
                 gcalLinks.thaw.href = buildGoogleCalendarUrl(events[0]);
-                gcalLinks.oven.href = buildGoogleCalendarUrl(events[1]);
-                gcalLinks.rest.href = buildGoogleCalendarUrl(events[2]);
+                gcalLinks.temper.href = buildGoogleCalendarUrl(events[1]);
+                gcalLinks.oven.href = buildGoogleCalendarUrl(events[2]);
+                gcalLinks.rest.href = buildGoogleCalendarUrl(events[3]);
                 currentPlan = { grocery, timeline: tl, dinnerTime: targetDinnerTime };
             };
 

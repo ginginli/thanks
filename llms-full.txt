@@ -1,26 +1,49 @@
 # HostCalc Pro — Thanksgiving Feast Planner
 
-> Free online Thanksgiving calculator that works backwards from your dinner time: enter adults, children and a target dinner time, and get a reverse-engineered cooking timeline (thaw, oven, rest) plus a grocery list scaled to your exact headcount. All math runs locally in the browser — no sign-up, nothing uploaded.
+> Free online Thanksgiving calculator that works backwards from your dinner time: enter adults, children, big eaters and a target dinner time, and get a reverse-engineered cooking timeline (thaw, temper, roast, rest) plus per-side-dish start times and a grocery list scaled to your exact headcount. Three leftover modes, shareable plan links, and one-click calendar reminders. All math runs locally in the browser — no sign-up, nothing uploaded.
 
 URL: https://www.hostcalc.pro/
 
 ## What is HostCalc Pro?
 
-HostCalc Pro is a free online Thanksgiving calculator that works backwards from the moment you want to sit down for dinner. Tell it how many adults and children are coming and your target dinner time, and it reverse-engineers the entire evening: when to move the turkey from the freezer to the fridge, when it goes into the oven, and when to pull it at 165 °F — plus a complete Thanksgiving grocery list scaled to your exact headcount.
+HostCalc Pro is a free online Thanksgiving calculator that works backwards from the moment you want to sit down for dinner. Tell it how many adults, children and big eaters are coming and your target dinner time, and it reverse-engineers the entire evening: when to move the turkey from the freezer to the fridge, when it goes into the oven, and when to pull it at 165 °F — plus a complete Thanksgiving grocery list scaled to your exact headcount.
+
+Think of it as a scaffold for first-time hosts, not a prophecy: the math gets you in the neighborhood, and the leftover modes and big-eater controls let you adjust for the uncle who takes thirds and the aunt who always packs a plate. Experience still beats any calculator — ours just saves you the guesswork on year one.
 
 ## Key Features
 
 ### Reverse schedule timeline
 
-Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting and thawing time from your dinner time and tells you exactly when to start each step — no mental math.
+Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting, tempering and thawing time from your dinner time and tells you exactly when to start each step — no mental math. It also flags that some turkeys are sold as cook-from-frozen, which skips the thaw step entirely (add about 50% more roast time).
+
+### Side-dish start times, not just the turkey
+
+Each side gets its own countdown: when to simmer the cranberry sauce (a day ahead), when to start the potatoes, when to warm the rolls during the rest window — so everything lands on the table hot at the same minute.
 
 ### Grocery list scaled per person
 
-Turkey, stuffing, potatoes, veggie sides, cranberry sauce, cheese, appetizers, dinner rolls, pies and wine — each sized from per-person portion rules, in practical shopping units (lbs, oz, pieces, bottles).
+Turkey, stuffing, potatoes, veggie sides, cranberry sauce, cheese, appetizers, dinner rolls, pies and wine — each sized from per-person portion rules, in practical shopping units (lbs, oz, pieces, bottles), with retail-unit hints (5-lb bags, 6-oz boxes, dozens).
 
-### Leftover planning built in
+### Smart bird-size coaching
 
-One toggle adds a 30% turkey buffer, so tomorrow's sandwiches are already accounted for before you buy the bird.
+- Cooking for just 1–2? Skip the whole bird — a roast turkey breast (bone-in, ~0.75–1 lb per person) is easier and faster. A 3 lb breast feeds two with leftovers.
+- Birds over 24 lb are rare and cook unevenly — the planner suggests two smaller turkeys (about half the total weight each) or one turkey plus a baked ham.
+
+### Three-tier leftover planning
+
+- **Just enough** — no buffer.
+- **Some +30%** — buffers the turkey, potatoes and dinner rolls (the most fought-over leftovers).
+- **Heavy +50%** — scales everything by 50% for to-go plates and big eaters.
+
+### Big-eater scaling
+
+Teens and athletes count as 1.5 adults' worth of food each, via a dedicated Big Eaters field — so food scales up without inflating the wine count.
+
+### Shareable plan links & one-click calendars
+
+- "Share this plan" copies a link with your numbers baked in — hand it to next year's host.
+- Every milestone — thaw, temper, oven, rest — links straight to Google Calendar, or download all 5 events (with pop-up reminders) as an .ics file for Google, Apple or Outlook.
+- Your latest plan is saved on your own device (localStorage) and offered back next visit.
 
 ### Real-time, right in your browser
 
@@ -28,9 +51,9 @@ Every input recalculates the timeline and grocery targets instantly. Nothing is 
 
 ## How to Use
 
-1. Enter your headcount — adults, plus children under 12 (counted as half portions).
-2. Set your target dinner time — it defaults to Thanksgiving dinner at 4:00 PM and snaps back to the nearest Thanksgiving if cleared.
-3. Toggle leftovers on or off, then read your reverse schedule and grocery targets. Everything updates live as you type.
+1. Enter your headcount — adults, children under 12 (half portions), and big eaters like teens and athletes (1.5 portions each).
+2. Set your target dinner time — it defaults to the nearest Thanksgiving dinner at 4:00 PM (Canadian Thanksgiving for Canadian visitors, otherwise the US 4th Thursday of November) and snaps back if cleared.
+3. Pick a leftover mode, then read your reverse schedule, side-dish start times and grocery targets. Everything updates live as you type.
 
 ## Why Choose HostCalc Pro?
 
@@ -43,31 +66,40 @@ Every input recalculates the timeline and grocery targets instantly. Nothing is 
 
 ### Per-person portion sizes
 
-Per equivalent adult (children under 12 count as half):
+Per equivalent adult (children under 12 count as 0.5, big eaters like teens and athletes count as 1.5):
 
-- Whole turkey: 1.5 lb per equivalent adult, plus 30% if leftovers are wanted
+- Whole turkey: 1.5 lb per equivalent adult, adjusted by leftover mode (Some adds 30% to turkey, potatoes and rolls; Heavy adds 50% to everything)
 - Stuffing: 0.25 lb (4 oz) per person
 - Potatoes: 0.33 lb (about 150 g) per person
 - Veggie sides: 3.5 oz per person
 - Cranberry sauce: 2 US fl oz per person
 - Cheese: 2 oz per person
 - Appetizers: 7 pieces per person
-- Dinner rolls: 2 per adult, 1 per child
+- Dinner rolls: 2 per adult (big eaters included), 1 per child
 - Pies: one 9-inch pie per 6 equivalent adults
-- Wine: 0.71 liters (about 24 fl oz) per adult; children are not counted for wine
+- Wine: 0.71 liters (about 24 fl oz) per regular adult only; big eaters and children do not add wine
 
 ### Reverse schedule rules
 
 - Resting: pull the bird 45 minutes before dinner, at 165 °F internal temperature.
-- Roasting: at 325 °F / 165 °C following the USDA weight timetable — about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds.
-- Thawing: fridge thaw takes one day per 4 lbs of turkey.
-- Thanksgiving is defined as the 4th Thursday of November (dinner at 4:00 PM by default).
+- Roasting: at 325 °F / 165 °C following the USDA weight timetable — about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds. Tent with foil if the skin browns too fast.
+- Tempering: take the bird out of the fridge 30 minutes before it goes into the oven (a timeline milestone with its own calendar reminder; never leave it out longer than two hours).
+- Thawing: fridge thaw takes one day per 4 lbs of turkey, ending when the temper step begins (the cold-water alternative is 30 minutes per pound, changing the water every 30 minutes).
+- Canadian Thanksgiving is the 2nd Monday of October; US Thanksgiving is the 4th Thursday of November (dinner at 4:00 PM by default).
+
+### Five steps from freezer to table
+
+1. **Thaw** — move to the fridge, one day per 4 lbs.
+2. **Temper** — out of the fridge ~30 minutes before roasting.
+3. **Roast** — 325 °F / 165 °C, USDA weight timetable.
+4. **Check** — pull at 165 °F internal temperature.
+5. **Rest** — 45 minutes before carving.
 
 ## FAQ
 
 ### How much turkey do I need per person?
 
-Plan on 1.5 lbs of whole turkey per adult; children under 12 count as half. For 8 adults and 2 kids, that's a 17–18 lb bird. Turn on leftovers for a 30% buffer.
+Plan on 1.5 lbs of whole turkey per adult; children under 12 count as half, teens and athletes count as 1.5. For 8 adults and 2 kids, that's a 17–18 lb bird. Pick a leftover mode: Some +30% buffers the turkey, potatoes and dinner rolls, while Heavy +50% scales everything for to-go plates and big eaters.
 
 ### When should I move my turkey to the fridge to thaw?
 
@@ -77,24 +109,37 @@ Fridge thawing takes about one day per 4 lbs, so a 17.6 lb turkey needs roughly 
 
 At 325 °F / 165 °C, we follow the USDA weight timetable — roughly 13 minutes per pound for large birds (20+ lb) up to 22 minutes per pound for small ones — then rest the bird for 45 minutes after pulling it at 165 °F internal temperature, the safe minimum recommended by the USDA FSIS.
 
+### How long does it take to thaw a turkey in cold water?
+
+About 30 minutes per pound in cold water, changing the water every 30 minutes — a 15 lb bird takes roughly 7.5 hours. The fridge method (one day per 4 lbs) is safer and needs no babysitting, which is why HostCalc Pro schedules it by default.
+
+### How much do teenagers eat at Thanksgiving?
+
+Count teens and athletes as big eaters — about 1.5 adults' worth of food each. Use the Big Eaters field (not the regular Adults box) so the food scales up without inflating the wine count.
+
 ### Do children eat as much as adults?
 
 No — each child under 12 is counted as half an adult across the grocery list, except for dinner rolls (one per child) and wine (adults only).
 
 ### Is my data stored anywhere?
 
-No. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent to any server.
+Not on any server. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent anywhere. The only thing saved is your latest plan, stored on your own device (browser localStorage) so you can reuse it next year or hand it over via the share link. Clearing your browser data removes it.
 
 ### What portion sizes does the calculator use per person?
 
-Per equivalent adult (children under 12 count as half): 1.5 lb whole turkey (plus 30% if you want leftovers), 0.25 lb (4 oz) stuffing, 0.33 lb (about 150 g) potatoes, 3.5 oz veggie sides, 2 US fl oz cranberry sauce, 2 oz cheese, 7 pieces of appetizers, and one 9-inch pie per 6 people. Dinner rolls are 2 per adult and 1 per child; wine is 0.71 liters (about 24 fl oz) per adult, and children are not counted for wine.
+Per equivalent adult (children under 12 count as half, big eaters like teens and athletes count as 1.5): 1.5 lb whole turkey, 0.25 lb (4 oz) stuffing, 0.33 lb (about 150 g) potatoes, 3.5 oz veggie sides, 2 US fl oz cranberry sauce, 2 oz cheese, 7 pieces of appetizers, and one 9-inch pie per 6 people. Dinner rolls are 2 per adult (big eaters included) and 1 per child. Wine is 0.71 liters (about 24 fl oz) per regular adult only — big eaters and children don't add wine. Leftover modes: Some adds +30% to the turkey, potatoes and rolls; Heavy adds +50% to everything.
 
 ### How does the reverse schedule work?
 
 We subtract backwards from your dinner time: first pull the bird 45 minutes early to rest; before that, roast at 325 °F following the USDA weight timetable (about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds); and before that, fridge-thaw at one day per 4 lbs. The result is the exact date and time to move your turkey into the fridge.
+
+## Blog
+
+- [How a Midwestern Mom Cooks Thanksgiving for 25](https://www.hostcalc.pro/blog/thanksgiving-for-25/) — the real-world lessons no portion calculator can teach.
 
 ## Metadata
 
 - Sitemap: https://www.hostcalc.pro/sitemap.xml
 - Robots: https://www.hostcalc.pro/robots.txt
 - Contact: hello@hostcalc.pro
+- Last updated: October 2026

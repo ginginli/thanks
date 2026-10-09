@@ -3,196 +3,578 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanksgiving Host Calculator</title>
-    <!-- 引入 Tailwind CSS 进行极简 UI 布局 -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>HostCalc Pro - Thanksgiving Feast Planner</title>
+    
     <style>
-        /* 隐藏数字输入框的上下箭头，提升手机端体验 */
+        :root {
+            /* Minimalist Base Colors */
+            --color-bg: #F5F5F7;          /* Classic Apple light gray background */
+            --color-surface: #FFFFFF;     /* Pure white for cards */
+            --color-input-bg: #F2F2F7;    /* Borderless input background */
+            
+            /* Text Colors */
+            --color-text-main: #1D1D1F;   /* Deep gray for primary text */
+            --color-text-muted: #86868B;  /* Silver gray for secondary text */
+            --color-border: #E5E5EA;      /* Subtle borders */
+            
+            /* Thanksgiving Theme Accents */
+            --color-primary: #E56020;         /* Pumpkin / Roast Orange */
+            --color-primary-soft: #FFF0E8;    /* Soft Orange background */
+            --color-primary-hover: #CC551C;   
+            
+            /* Timeline Step Colors */
+            --color-step-1: #4382F6;      /* Thaw (Cold Blue) */
+            --color-step-2: #E56020;      /* Oven (Hot Orange) */
+            --color-step-3: #34C759;      /* Rest (Done Green) */
+            
+            /* Shadows & Radii */
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 10px 32px rgba(0, 0, 0, 0.08);
+            --radius-card: 24px;
+            --radius-input: 16px;
+            
+            /* Typography */
+            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+            padding: var(--spacing-lg) 16px;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        header {
+            text-align: center;
+            padding: var(--spacing-md) 0;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: var(--color-text-muted);
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            padding: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-badge {
+            background-color: var(--color-primary);
+            color: var(--color-surface);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .apple-input {
+            background-color: var(--color-input-bg);
+            color: var(--color-text-main);
+            border: 2px solid transparent;
+            border-radius: var(--radius-input);
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .apple-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background-color: var(--color-surface);
+            box-shadow: 0 0 0 4px rgba(229, 96, 32, 0.1);
+        }
+
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+            -webkit-appearance: none; margin: 0;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .toggle-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .toggle-subtext {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            font-weight: 400;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--color-border);
+            transition: .3s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px; width: 26px;
+            left: 2px; bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider { background-color: var(--color-primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 11px;
+            width: 2px;
+            background-color: var(--color-input-bg);
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -28px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--color-surface);
+            border: 3px solid;
+            z-index: 1;
+        }
+
+        .dot-1 { border-color: var(--color-step-1); }
+        .dot-2 { border-color: var(--color-step-2); }
+        .dot-3 { border-color: var(--color-step-3); }
+
+        .timeline-date {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--color-text-main);
+        }
+
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-top: 4px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .grocery-card {
+            background-color: var(--color-input-bg);
+            border-radius: var(--radius-input);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .grocery-card:hover {
+            transform: translateY(-2px);
+            background-color: #EBEBEF;
+        }
+
+        .grocery-card.highlight {
+            grid-column: 1 / -1;
+            background-color: var(--color-primary-soft);
+            color: var(--color-primary);
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .grocery-card.highlight .g-name { color: var(--color-primary-hover); }
+        .grocery-card.highlight .g-value { color: var(--color-primary); font-size: 2.2rem; }
+        
+        .g-icon { font-size: 1.6rem; margin-bottom: 4px; }
+        .g-name { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+        .g-value { font-size: 1.6rem; font-weight: 700; display: flex; align-items: baseline; gap: 4px;}
+        .g-unit { font-size: 0.85rem; font-weight: 600; opacity: 0.7; }
+
+        @media (max-width: 500px) {
+            .input-grid { grid-template-columns: 1fr; }
+            .results-grid { grid-template-columns: 1fr 1fr; }
+            .grocery-card.highlight { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased p-4 md:p-8">
+<body>
 
-    <div class="max-w-lg mx-auto space-y-6">
+    <div class="container">
         
-        <!-- 头部 -->
-        <header class="text-center space-y-2 mb-8">
-            <h1 class="text-3xl font-extrabold text-orange-600">HostCalc<span class="text-gray-800">.pro</span></h1>
-            <p class="text-gray-500 font-medium">Your Thanksgiving Feast Planner</p>
+        <header>
+            <h1>HostCalc.pro</h1>
+            <p>Thanksgiving Reverse Schedule & Grocery Scale</p>
         </header>
 
-        <!-- 第一步：输入变量 -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold mb-4 flex items-center">
-                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">1</span> 
-                Who's Eating?
-            </h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Adults</label>
-                    <input type="number" id="adults" value="8" min="1" class="w-full bg-gray-50 border border-gray-200 text-xl font-bold p-3 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Kids (Under 12)</label>
-                    <input type="number" id="kids" value="2" min="0" class="w-full bg-gray-50 border border-gray-200 text-xl font-bold p-3 rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <label class="block text-sm font-medium text-gray-600 mb-1">Planned Dinner Time</label>
-                <input type="datetime-local" id="dinner-time" value="2026-11-26T16:00" class="w-full bg-gray-50 border border-gray-200 text-lg font-medium p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500">
-            </div>
-        </div>
-
-        <!-- 第二步：采购清单 (购物漏斗变现位) -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold mb-4 flex items-center">
-                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">2</span> 
-                Grocery Target
-            </h2>
-            <div class="flex items-center justify-between bg-orange-50 p-4 rounded-xl">
-                <div>
-                    <p class="text-sm text-orange-800 font-medium">Whole Turkey Needed</p>
-                    <p class="text-xs text-orange-600/70 mt-1">Includes allowance for leftovers</p>
-                </div>
-                <div class="text-3xl font-black text-orange-600">
-                    <span id="turkey-weight">14</span> <span class="text-lg font-bold">lbs</span>
-                </div>
-            </div>
-            <!-- 预留的 Instacart 或生鲜 CPS 联盟链接位置 -->
-            <a href="#" class="mt-3 block text-center text-sm text-gray-500 hover:text-orange-600 underline decoration-gray-300 underline-offset-4">
-                + Add to Instacart Delivery
-            </a>
-        </div>
-
-        <!-- 第三步：时间排期表 (厨具漏斗变现位) -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold mb-4 flex items-center">
-                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">3</span> 
-                Prep Schedule
+        <!-- Step 1: Parameters -->
+        <section class="card">
+            <h2 class="section-title">
+                <span class="icon-badge">1</span> 
+                Event Parameters
             </h2>
             
-            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label class="input-label" for="adults">Adults</label>
+                    <input type="number" id="adults" class="apple-input" value="8" min="1">
+                </div>
+                <div class="input-group">
+                    <label class="input-label" for="children">Children (under 12)</label>
+                    <input type="number" id="children" class="apple-input" value="2" min="0">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 16px;">
+                <label class="input-label" for="dinner-time">Target Dinner Time</label>
+                <input type="datetime-local" id="dinner-time" class="apple-input" value="2026-11-26T16:00">
+            </div>
+
+            <div class="toggle-row">
+                <div>
+                    <span class="toggle-text">Include Leftovers?</span>
+                    <span class="toggle-subtext">Scales turkey weight by 30% for tomorrow</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="leftovers" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </section>
+
+        <!-- Step 2: Timeline -->
+        <section class="card">
+            <h2 class="section-title">
+                <span class="icon-badge" style="background-color: var(--color-step-1);">2</span> 
+                Reverse Schedule Timeline
+            </h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot dot-1"></div>
+                    <div class="timeline-date" id="time-thaw">Nov 22, 4:00 PM</div>
+                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">3.5</span> days)</div>
+                </div>
                 
-                <!-- 节点 1: 解冻 -->
-                <div class="relative flex items-start pl-8 md:pl-0">
-                    <div class="hidden md:block w-1/2 pr-6 text-right">
-                        <p class="text-sm font-bold text-gray-800" id="thaw-date">Nov 22, 4:00 PM</p>
-                        <p class="text-xs text-gray-500">Move to Fridge</p>
-                    </div>
-                    <div class="absolute left-0 md:left-1/2 w-5 h-5 rounded-full bg-blue-100 border-4 border-white transform md:-translate-x-1/2 flex items-center justify-center">
-                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    </div>
-                    <div class="md:hidden w-full pb-4">
-                        <p class="text-sm font-bold text-gray-800" id="thaw-date-mobile">Nov 22, 4:00 PM</p>
-                        <p class="text-xs text-gray-500">Start fridge thaw (<span id="thaw-days">3.5</span> days needed)</p>
-                    </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot dot-2"></div>
+                    <div class="timeline-date" id="time-oven">Nov 26, 12:00 PM</div>
+                    <div class="timeline-desc">Put turkey in oven at 325°F / 165°C</div>
                 </div>
 
-                <!-- 节点 2: 烘烤 -->
-                <div class="relative flex items-start pl-8 md:pl-0">
-                    <div class="md:hidden w-full pb-4">
-                        <p class="text-sm font-bold text-gray-800" id="oven-date-mobile">Nov 26, 12:00 PM</p>
-                        <p class="text-xs text-gray-500">Put in oven (325°F / 165°C)</p>
+                <div class="timeline-item">
+                    <div class="timeline-dot dot-3"></div>
+                    <div class="timeline-date" id="time-rest">Nov 26, 3:15 PM</div>
+                    <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Groceries -->
+        <section class="card">
+            <h2 class="section-title">
+                <span class="icon-badge" style="background-color: var(--color-text-main);">3</span> 
+                Grocery Targets
+            </h2>
+
+            <div class="results-grid">
+                
+                <div class="grocery-card highlight">
+                    <div>
+                        <div class="g-icon">🦃</div>
+                        <div class="g-name">Whole Turkey</div>
                     </div>
-                    <div class="hidden md:block w-1/2 pl-6 md:ml-auto">
-                        <p class="text-sm font-bold text-gray-800" id="oven-date">Nov 26, 12:00 PM</p>
-                        <p class="text-xs text-gray-500">Put in oven at 325°F</p>
-                    </div>
-                    <div class="absolute left-0 md:left-1/2 w-5 h-5 rounded-full bg-orange-100 border-4 border-white transform md:-translate-x-1/2 flex items-center justify-center">
-                        <div class="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                    </div>
+                    <div class="g-value"><span id="g-turkey">14.0</span> <span class="g-unit">lbs</span></div>
                 </div>
 
-                <!-- 节点 3: 测温静置 (Amazon 链接位) -->
-                <div class="relative flex items-start pl-8 md:pl-0">
-                    <div class="hidden md:block w-1/2 pr-6 text-right">
-                        <p class="text-sm font-bold text-gray-800" id="rest-date">Nov 26, 3:15 PM</p>
-                        <p class="text-xs text-gray-500">Take out & Rest</p>
-                    </div>
-                    <div class="absolute left-0 md:left-1/2 w-5 h-5 rounded-full bg-green-100 border-4 border-white transform md:-translate-x-1/2 flex items-center justify-center">
-                        <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    </div>
-                    <div class="md:hidden w-full pb-4">
-                        <p class="text-sm font-bold text-gray-800" id="rest-date-mobile">Nov 26, 3:15 PM</p>
-                        <p class="text-xs text-gray-500">Take out at 165°F and rest</p>
-                        <a href="#" class="inline-block mt-1 text-xs text-orange-600 font-medium">Get a reliable Meat Thermometer ➔</a>
-                    </div>
+                <div class="grocery-card">
+                    <div class="g-icon">🍞</div>
+                    <div class="g-name">Stuffing</div>
+                    <div class="g-value"><span id="g-stuffing">2.3</span> <span class="g-unit">lbs</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🥔</div>
+                    <div class="g-name">Potatoes</div>
+                    <div class="g-value"><span id="g-potatoes">3.2</span> <span class="g-unit">lbs</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🥦</div>
+                    <div class="g-name">Veggie Sides</div>
+                    <div class="g-value"><span id="g-veggies">31.5</span> <span class="g-unit">oz</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🍒</div>
+                    <div class="g-name">Cranberry Sauce</div>
+                    <div class="g-value"><span id="g-cranberry">18.0</span> <span class="g-unit">fl oz</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🧀</div>
+                    <div class="g-name">Cheese</div>
+                    <div class="g-value"><span id="g-cheese">18.0</span> <span class="g-unit">oz</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🍤</div>
+                    <div class="g-name">Appetizers</div>
+                    <div class="g-value"><span id="g-appetizers">63</span> <span class="g-unit">pcs</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🥐</div>
+                    <div class="g-name">Dinner Rolls</div>
+                    <div class="g-value"><span id="g-rolls">18</span> <span class="g-unit">rolls</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🥧</div>
+                    <div class="g-name">9-inch Pies</div>
+                    <div class="g-value"><span id="g-pies">2</span> <span class="g-unit">pies</span></div>
+                </div>
+
+                <div class="grocery-card">
+                    <div class="g-icon">🍷</div>
+                    <div class="g-name">Wine</div>
+                    <div class="g-value"><span id="g-wine">6.0</span> <span class="g-unit">btls</span></div>
                 </div>
 
             </div>
-        </div>
+        </section>
+
     </div>
 
     <script>
-        // DOM Elements
-        const elAdults = document.getElementById('adults');
-        const elKids = document.getElementById('kids');
-        const elTime = document.getElementById('dinner-time');
-        const elWeight = document.getElementById('turkey-weight');
-        
-        // Mobile schedule elements
-        const elThawMobile = document.getElementById('thaw-date-mobile');
-        const elThawDays = document.getElementById('thaw-days');
-        const elOvenMobile = document.getElementById('oven-date-mobile');
-        const elRestMobile = document.getElementById('rest-date-mobile');
-
-        // Format Date to friendly string (e.g. "Nov 22, 4:00 PM")
-        function formatDateTime(dateObj) {
-            return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + 
-                   dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-        }
-
-        // Core Calculation Engine
-        function calculateFeast() {
-            const adults = parseInt(elAdults.value) || 0;
-            const kids = parseInt(elKids.value) || 0;
-            const targetTime = new Date(elTime.value);
-
-            // 1. 食量计算：成人 1.5 磅 (预留剩菜)，儿童 0.75 磅
-            const totalLbs = Math.ceil((adults * 1.5) + (kids * 0.75));
-            elWeight.innerText = totalLbs;
-
-            // 2. 时间倒推逻辑
-            // 烘烤时间: 每磅约 15 分钟 (325华氏度下)
-            const cookMins = totalLbs * 15;
-            // 静置时间: 固定 45 分钟锁住汁水
-            const restingMins = 45;
+        document.addEventListener('DOMContentLoaded', () => {
             
-            // 算出烤箱拿出来的时间 = 晚宴时间 - 静置时间
-            const restTime = new Date(targetTime.getTime() - restingMins * 60000);
+            // 1. Map all interactive DOM elements
+            const inputs = {
+                adults: document.getElementById('adults'),
+                children: document.getElementById('children'),
+                time: document.getElementById('dinner-time'),
+                leftovers: document.getElementById('leftovers')
+            };
+
+            const outputs = {
+                turkey: document.getElementById('g-turkey'),
+                stuffing: document.getElementById('g-stuffing'),
+                potatoes: document.getElementById('g-potatoes'),
+                veggies: document.getElementById('g-veggies'),
+                cranberry: document.getElementById('g-cranberry'),
+                cheese: document.getElementById('g-cheese'),
+                appetizers: document.getElementById('g-appetizers'),
+                rolls: document.getElementById('g-rolls'),
+                pies: document.getElementById('g-pies'),
+                wine: document.getElementById('g-wine')
+            };
+
+            const timeline = {
+                thawDate: document.getElementById('time-thaw'),
+                thawDays: document.getElementById('days-thaw'),
+                ovenDate: document.getElementById('time-oven'),
+                restDate: document.getElementById('time-rest')
+            };
+
+            // 2. Helper formatters
+            const formatNum = (num, decimals = 1) => Number(num.toFixed(decimals));
             
-            // 算出进烤箱的时间 = 拿出来的时间 - 烘烤时间
-            const ovenTime = new Date(restTime.getTime() - cookMins * 60000);
+            const formatDate = (dateObj) => {
+                // E.g., "Tue, Nov 24, 2:00 PM"
+                return new Intl.DateTimeFormat('en-US', {
+                    weekday: 'short',
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: 'numeric', 
+                    minute: '2-digit'
+                }).format(dateObj);
+            };
 
-            // 解冻时间: 冰箱冷藏解冻，每 4 磅需要 24 小时
-            const thawDays = totalLbs / 4;
-            // 算出开始解冻时间 = 进烤箱时间 - 解冻天数
-            const thawTime = new Date(ovenTime.getTime() - (thawDays * 24 * 60 * 60000));
+            // 3. Core Calculation Engine
+            const calculateAll = () => {
+                // Parse inputs
+                const A = parseInt(inputs.adults.value) || 0;
+                const C = parseInt(inputs.children.value) || 0;
+                const wantsLeftovers = inputs.leftovers.checked;
+                
+                // Fallback to current date if input is cleared
+                let targetDinnerTime = new Date(inputs.time.value);
+                if (isNaN(targetDinnerTime.getTime())) {
+                    targetDinnerTime = new Date(); 
+                }
 
-            // 3. 更新 UI
-            elThawMobile.innerText = formatDateTime(thawTime);
-            elThawDays.innerText = thawDays.toFixed(1);
-            elOvenMobile.innerText = formatDateTime(ovenTime);
-            elRestMobile.innerText = formatDateTime(restTime);
-            
-            // 桌面端双端渲染更新 (如果屏幕宽度足够，显示桌面排版)
-            document.getElementById('thaw-date').innerText = formatDateTime(thawTime);
-            document.getElementById('oven-date').innerText = formatDateTime(ovenTime);
-            document.getElementById('rest-date').innerText = formatDateTime(restTime);
-        }
+                // Equivalent Adults (Children eat roughly half)
+                const E = A + (C / 2);
+                const leftoverMultiplier = wantsLeftovers ? 1.3 : 1.0;
 
-        // 绑定事件监听器：只要数值改变，实时触发计算，无须点击按钮
-        [elAdults, elKids, elTime].forEach(input => {
-            input.addEventListener('input', calculateFeast);
+                /* --- A. GROCERY CALCULATIONS --- */
+                // Turkey: 1.5 lbs per equivalent adult
+                const turkeyLbs = E * 1.5 * leftoverMultiplier;
+                outputs.turkey.textContent = formatNum(turkeyLbs);
+
+                // Stuffing: ~0.25 lbs per person
+                outputs.stuffing.textContent = formatNum(E * 0.25);
+                
+                // Potatoes: ~0.35 lbs per person
+                outputs.potatoes.textContent = formatNum(E * 0.35);
+                
+                // Veggie Sides: ~3.5 oz per person
+                outputs.veggies.textContent = formatNum(E * 3.5);
+                
+                // Cranberry Sauce: ~2 fluid oz per person
+                outputs.cranberry.textContent = formatNum(E * 2.0);
+                
+                // Cheese: ~2 oz per person
+                outputs.cheese.textContent = formatNum(E * 2.0);
+                
+                // Appetizers: 7 pieces per equivalent adult
+                outputs.appetizers.textContent = Math.ceil(E * 7);
+                
+                // Rolls: 2 for adults, 1 for kids
+                outputs.rolls.textContent = (A * 2) + (C * 1);
+                
+                // Pies: 1 pie per 6 equivalent adults
+                outputs.pies.textContent = Math.max(1, Math.ceil(E / 6));
+                
+                // Wine: 0.7 bottles per adult (kids don't drink)
+                outputs.wine.textContent = formatNum(A * 0.7);
+
+                /* --- B. TIMELINE REVERSE ENGINEERING --- */
+                // 1. Resting Time (always 45 mins)
+                const restTimeMs = 45 * 60000;
+                const timeToRest = new Date(targetDinnerTime.getTime() - restTimeMs);
+                
+                // 2. Oven Time (15 mins per lb of total turkey weight)
+                const cookTimeMs = turkeyLbs * 15 * 60000;
+                const timeToOven = new Date(timeToRest.getTime() - cookTimeMs);
+                
+                // 3. Thawing Time (Fridge thaw = 24 hrs per 4 lbs = 6 hrs per lb)
+                const thawDays = turkeyLbs / 4;
+                const thawTimeMs = thawDays * 24 * 60 * 60000;
+                const timeToThaw = new Date(timeToOven.getTime() - thawTimeMs);
+
+                /* --- C. UPDATE TIMELINE DOM --- */
+                timeline.restDate.textContent = formatDate(timeToRest);
+                timeline.ovenDate.textContent = formatDate(timeToOven);
+                timeline.thawDate.textContent = formatDate(timeToThaw);
+                timeline.thawDays.textContent = formatNum(thawDays);
+            };
+
+            // 4. Attach Event Listeners for real-time reactivity
+            Object.values(inputs).forEach(inputElement => {
+                inputElement.addEventListener('input', calculateAll);
+                inputElement.addEventListener('change', calculateAll);
+            });
+
+            // Initial calculation on load
+            calculateAll();
         });
-
-        // 初始化计算一次
-        calculateFeast();
     </script>
 </body>
 </html>

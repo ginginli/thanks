@@ -7,7 +7,10 @@
  * Model assumptions (aligned with omnicalculator.com/food/thanksgiving):
  *  - Children (under 12) eat roughly half an adult portion.
  *  - Whole turkey: 1.5 lbs per equivalent adult.
- *  - Leftovers add +30% to the turkey only.
+ *  - Leftovers: "light" buffers the turkey, potatoes and dinner rolls by
+ *    +30% (the most fought-over take-home dishes); "heavy" scales the
+ *    entire list by +50% (the "add five people" rule of thumb for hosts
+ *    who send everyone home with to-go plates).
  *  - Roast at 325°F / 165°C following the USDA-style weight timetable
  *    (~13–22 min per lb, tapering as the bird gets bigger), plus 45 min resting.
  *  - Fridge thaw: 1 day per 4 lbs of turkey.
@@ -32,9 +35,21 @@
 
     const WINE_BOTTLE_LITERS = 0.75;   // standard 750 ml wine bottle
 
-    const LEFTOVER_MULTIPLIER = 1.3;  // +30% turkey when leftovers are wanted
+    // Leftover modes. "light" buffers the turkey and the take-home
+    // favorites (potatoes, dinner rolls) by +30%; "heavy" scales the whole
+    // grocery list by +50% — the field-tested "add five people" advice for
+    // big-eater families where everything gets packed up.
+    const LEFTOVER_MODES = {
+        none:  { turkey: 1.0, hotSides: 1.0, sides: 1.0 },
+        light: { turkey: 1.3, hotSides: 1.3, sides: 1.0 },
+        heavy: { turkey: 1.5, hotSides: 1.5, sides: 1.5 }
+    };
     const REST_MINUTES = 45;          // turkey resting time
     const THAW_DAYS_PER_LB = 1 / 4;   // fridge thaw: 1 day per 4 lbs
+    const WATER_THAW_MIN_PER_LB = 30; // cold-water thaw: 30 min per lb, change water every 30 min
+
+    /** Cold-water thaw time in minutes (submerge in cold water, change it every 30 min). */
+    const coldWaterThawMinutes = (lbs) => lbs * WATER_THAW_MIN_PER_LB;
 
     /**
      * USDA-style roast timetable (same lookup as Omni Calculator):
@@ -100,35 +115,41 @@
      * Calculate groceries and the reverse-engineered cooking timeline.
      *
      * @param {Object} params
-     * @param {number} params.adults      Number of adults.
-     * @param {number} params.children    Number of children (under 12).
-     * @param {boolean} params.leftovers  Whether a 30% turkey buffer is wanted.
-     * @param {Date} params.dinnerTime    Target sit-down time.
+     * @param {number} params.adults       Number of adults.
+     * @param {number} params.children     Number of children (under 12).
+     * @param {string} [params.leftoverMode] 'none' | 'light' (+30% turkey,
+     *        potatoes, rolls) |
+     *        'heavy' (+50% on everything). Legacy boolean `leftovers` still
+     *        accepted: true -> 'light', false -> 'none'.
+     * @param {Date} params.dinnerTime     Target sit-down time.
      * @returns {Object} grocery quantities + timeline milestones.
      */
-    function planFeast({ adults = 0, children = 0, leftovers = false, dinnerTime }) {
+    function planFeast({ adults = 0, children = 0, leftovers = undefined, leftoverMode = undefined, dinnerTime }) {
         const A = Number(adults) || 0;
         const C = Number(children) || 0;
         const target = dinnerTime instanceof Date ? dinnerTime : new Date(dinnerTime);
 
         // Equivalent adults: children count as half
         const E = A + (C / 2);
-        const leftoverMultiplier = leftovers ? LEFTOVER_MULTIPLIER : 1.0;
+
+        const mode = leftoverMode || (leftovers === true ? 'light' : 'none');
+        const { turkey: turkeyMult, hotSides: hotSideMult, sides: sideMult } =
+            LEFTOVER_MODES[mode] || LEFTOVER_MODES.none;
 
         /* --- A. Groceries --- */
-        const turkeyLbs = E * RATIOS.turkeyLbsPerAdult * leftoverMultiplier;
+        const turkeyLbs = E * RATIOS.turkeyLbsPerAdult * turkeyMult;
 
         const grocery = {
             turkeyLbs,
-            stuffingLbs: E * RATIOS.stuffingLbsPerAdult,
-            potatoesLbs: E * RATIOS.potatoesLbsPerAdult,
-            veggiesOz: E * RATIOS.veggiesOzPerAdult,
-            cranberryFlOz: E * RATIOS.cranberryFlOzPerAdult,
-            cheeseOz: E * RATIOS.cheeseOzPerAdult,
-            appetizers: E * RATIOS.appetizersPerAdult,
-            rolls: A * RATIOS.rollsPerAdult + C * RATIOS.rollsPerChild,
-            pies: Math.max(1, Math.ceil(E / RATIOS.piesPerAdults)),
-            wineBottles: A * RATIOS.wineLitersPerAdult / WINE_BOTTLE_LITERS
+            stuffingLbs: E * RATIOS.stuffingLbsPerAdult * sideMult,
+            potatoesLbs: E * RATIOS.potatoesLbsPerAdult * hotSideMult,
+            veggiesOz: E * RATIOS.veggiesOzPerAdult * sideMult,
+            cranberryFlOz: E * RATIOS.cranberryFlOzPerAdult * sideMult,
+            cheeseOz: E * RATIOS.cheeseOzPerAdult * sideMult,
+            appetizers: Math.ceil(E * RATIOS.appetizersPerAdult * sideMult),
+            rolls: Math.ceil((A * RATIOS.rollsPerAdult + C * RATIOS.rollsPerChild) * hotSideMult),
+            pies: Math.max(1, Math.ceil(E * sideMult / RATIOS.piesPerAdults)),
+            wineBottles: A * RATIOS.wineLitersPerAdult * sideMult / WINE_BOTTLE_LITERS
         };
 
         /* --- B. Timeline, reverse-engineered from dinner time --- */
@@ -266,9 +287,11 @@
     const api = {
         RATIOS,
         WINE_BOTTLE_LITERS,
-        LEFTOVER_MULTIPLIER,
+        LEFTOVER_MODES,
         REST_MINUTES,
         THAW_DAYS_PER_LB,
+        WATER_THAW_MIN_PER_LB,
+        coldWaterThawMinutes,
         roastMinutesForWeight,
         toInputValue,
         thanksgivingOf,

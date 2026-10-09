@@ -183,9 +183,11 @@
      *        'heavy' (+50% on everything). Legacy boolean `leftovers` still
      *        accepted: true -> 'light', false -> 'none'.
      * @param {Date} params.dinnerTime     Target sit-down time.
+     * @param {boolean} [params.cookFromFrozen] Skip the thaw entirely and
+     *        roast straight from frozen (USDA-safe, ~50% more roast time).
      * @returns {Object} grocery quantities + timeline milestones.
      */
-    function planFeast({ adults = 0, children = 0, bigEaters = 0, leftovers = undefined, leftoverMode = undefined, dinnerTime }) {
+    function planFeast({ adults = 0, children = 0, bigEaters = 0, leftovers = undefined, leftoverMode = undefined, dinnerTime, cookFromFrozen = false }) {
         const A = Number(adults) || 0;
         const C = Number(children) || 0;
         const B = Number(bigEaters) || 0;
@@ -215,21 +217,27 @@
         };
 
         /* --- B. Timeline, reverse-engineered from dinner time --- */
+        const frozen = !!cookFromFrozen;
+
         // 1. Resting: pull the bird 45 minutes before dinner
         const timeToRest = new Date(target.getTime() - REST_MINUTES * MINUTE_MS);
 
-        // 2. Oven: roast time from the USDA weight timetable
-        const cookMinutes = roastMinutesForWeight(turkeyLbs);
+        // 2. Oven: roast time from the USDA weight timetable; a frozen bird
+        //    goes straight from freezer to oven and needs ~50% longer
+        const cookMinutes = roastMinutesForWeight(turkeyLbs) * (frozen ? 1.5 : 1);
         const timeToOven = new Date(timeToRest.getTime() - cookMinutes * MINUTE_MS);
 
         // 2'. Temper: take the bird out of the fridge ~30 min before roasting
-        const timeToTemper = new Date(timeToOven.getTime() - TEMPER_MINUTES * MINUTE_MS);
+        //     (not applicable when roasting from frozen)
+        const timeToTemper = frozen ? null : new Date(timeToOven.getTime() - TEMPER_MINUTES * MINUTE_MS);
 
-        // 3. Thaw: fridge thaw = 1 day per 4 lbs
-        const thawDays = turkeyLbs * THAW_DAYS_PER_LB;
-        const timeToThaw = new Date(timeToTemper.getTime() - thawDays * 24 * 60 * MINUTE_MS);
+        // 3. Thaw: fridge thaw = 1 day per 4 lbs (skipped when cooking from frozen)
+        const thawDays = frozen ? 0 : turkeyLbs * THAW_DAYS_PER_LB;
+        const timeToThaw = frozen ? null
+            : new Date(timeToTemper.getTime() - thawDays * 24 * 60 * MINUTE_MS);
 
         const timeline = {
+            frozen,
             restAt: timeToRest,
             ovenAt: timeToOven,
             temperAt: timeToTemper,
@@ -341,36 +349,46 @@
     }
 
     /**
-     * Turn a planFeast result into calendar events:
-     * thaw, oven, rest milestones plus the dinner itself.
+     * Turn a planFeast result into calendar events: thaw, temper, oven and
+     * rest milestones (thaw/temper omitted when roasting from frozen) plus
+     * the dinner itself.
      */
     function milestoneEvents(plan, dinnerTime) {
         const lb = formatNum(plan.grocery.turkeyLbs);
         const mins = Math.round(plan.timeline.cookMinutes);
         const at = (d, minutes) => new Date(d.getTime() + minutes * MINUTE_MS);
+        const frozen = !!plan.timeline.frozen;
 
-        return [
-            {
+        const events = [];
+
+        if (plan.timeline.thawAt) {
+            events.push({
                 uid: 'thaw',
                 title: `Thaw ${lb} lb turkey in the fridge`,
                 start: plan.timeline.thawAt,
                 end: at(plan.timeline.thawAt, 30),
                 details: `Fridge thaw needs about ${formatNum(plan.timeline.thawDays)} days (1 day per 4 lb). Planned with HostCalc Pro.`
-            },
-            {
+            });
+        }
+
+        if (plan.timeline.temperAt) {
+            events.push({
                 uid: 'temper',
                 title: `Take ${lb} lb turkey out of the fridge to temper`,
                 start: plan.timeline.temperAt,
                 end: at(plan.timeline.temperAt, 30),
                 details: 'Let the bird sit ~30 minutes at room temperature so it roasts evenly. Planned with HostCalc Pro.',
                 reminder: '-PT15M'
-            },
+            });
+        }
+
+        events.push(
             {
                 uid: 'oven',
                 title: `Put ${lb} lb turkey in the oven (325°F / 165°C)`,
                 start: plan.timeline.ovenAt,
                 end: plan.timeline.restAt,
-                details: `Roast about ${mins} minutes until the internal temperature reaches 165°F. Planned with HostCalc Pro.`
+                details: `Roast about ${mins} minutes${frozen ? ' (straight from the freezer, +50% time)' : ''} until the internal temperature reaches 165°F. Planned with HostCalc Pro.`
             },
             {
                 uid: 'rest',
@@ -387,7 +405,9 @@
                 details: 'Dinner is served. Planned with HostCalc Pro.',
                 reminder: '-PT60M'
             }
-        ];
+        );
+
+        return events;
     }
 
     const api = {

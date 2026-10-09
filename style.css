@@ -316,14 +316,37 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     gap: 28px;
+    max-height: 380px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
 }
 
-.timeline::before {
+.timeline::-webkit-scrollbar {
+    width: 6px;
+}
+
+.timeline::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+/* The connector line is drawn per item (not on the scroll container) so it
+   spans the full scrollable height instead of only the visible box */
+.timeline-item::before {
     content: '';
     position: absolute;
-    top: 0; bottom: 0; left: 11px;
+    left: -17px;
+    top: 24px;
+    bottom: -28px;
     width: 2px;
     background-color: var(--color-input-bg);
+}
+
+.timeline-item:last-child::before {
+    display: none;
 }
 
 .timeline-item {
@@ -349,6 +372,10 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 600;
     font-size: 1.1rem;
     color: var(--color-text-main);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .timeline-desc {
@@ -376,7 +403,6 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 600;
     color: var(--color-step-2);
     text-decoration: none;
-    margin-left: 8px;
     white-space: nowrap;
 }
 

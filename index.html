@@ -266,9 +266,16 @@
                 </div>
             </div>
 
-            <p class="serving-hint">
-                💡 New to hosting? This planner handles the math — then add a few extra servings for the big eaters and the to-go plates. Experienced hosts: you already know your family (and yes, somebody always wants extra rolls).
-            </p>
+            <div class="toggle-row">
+                <div>
+                    <span class="toggle-text">Frozen bird (cook straight from the freezer)</span>
+                    <span class="toggle-subtext">Skips the thaw entirely — safe per the USDA, just ~50% more roast time</span>
+                </div>
+                <label class="side-toggle">
+                    <input type="checkbox" id="cook-frozen" aria-label="Cook the turkey straight from frozen">
+                    <span class="side-toggle-track" aria-hidden="true"><span class="side-toggle-thumb"></span></span>
+                </label>
+            </div>
 
             <div class="share-row">
                 <button type="button" class="share-btn" id="share-plan">🔗 Share this plan</button>
@@ -288,38 +295,42 @@
             </h2>
 
             <div class="timeline">
-                <div class="timeline-item">
+                <div class="timeline-item" id="item-thaw">
                     <div class="timeline-dot dot-1"></div>
-                    <div class="timeline-date" id="time-thaw">Sun, Nov 22, 1:28 AM</div>
-                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)
+                    <div class="timeline-date"><span id="time-thaw">Sun, Nov 22, 1:28 AM</span>
                         <a class="cal-link" id="gcal-thaw" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
                     </div>
-                    <div class="timeline-note">Fridge thaw needs about <span id="days-thaw">4.4</span> days (1 day per 4 lb). ⚠️ Check the packaging first: some turkeys are sold as <strong>cook-from-frozen</strong> — those skip this thaw step and go straight from freezer to oven (add ~50% more roast time).</div>
+                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)
+                    </div>
+                    <div class="timeline-note">Fridge thaw needs about one day per 4 lb. ⚠️ Check the packaging first: some turkeys are sold as <strong>cook-from-frozen</strong> — those skip this thaw step and go straight from freezer to oven (add ~50% more roast time).</div>
                 </div>
 
-                <div class="timeline-item">
+                <div class="timeline-item" id="item-temper">
                     <div class="timeline-dot dot-2"></div>
-                    <div class="timeline-date" id="time-temper">Thu, Nov 26, 10:16 AM</div>
-                    <div class="timeline-desc">Take turkey out of the fridge to temper (30 mins)
+                    <div class="timeline-date"><span id="time-temper">Thu, Nov 26, 10:16 AM</span>
                         <a class="cal-link" id="gcal-temper" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
+                    <div class="timeline-desc">Take turkey out of the fridge to temper (30 mins)
                     </div>
                     <div class="timeline-note">A short counter rest helps the bird cook evenly — 30 minutes is enough; never leave it out longer than two hours (food safety).</div>
                 </div>
 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-2"></div>
-                    <div class="timeline-date" id="time-oven">Thu, Nov 26, 10:46 AM</div>
-                    <div class="timeline-desc">Put turkey in oven at 325°F / 165°C
+                    <div class="timeline-date"><span id="time-oven">Thu, Nov 26, 10:46 AM</span>
                         <a class="cal-link" id="gcal-oven" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
+                    <div class="timeline-desc">Put turkey in oven at 325°F / 165°C<span id="frozen-tag" hidden> — straight from the freezer, no thaw needed</span>
                     </div>
                     <div class="timeline-note">Follow the USDA weight timetable for this bird. If the skin browns too quickly, tent it loosely with foil.</div>
                 </div>
 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-3"></div>
-                    <div class="timeline-date" id="time-rest">Thu, Nov 26, 3:15 PM</div>
-                    <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)
+                    <div class="timeline-date"><span id="time-rest">Thu, Nov 26, 3:15 PM</span>
                         <a class="cal-link" id="gcal-rest" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
+                    <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)
                     </div>
                     <div class="timeline-note">Pull when the thickest part of the breast reaches 165°F, then rest 45 minutes so the juices redistribute before carving.</div>
                 </div>
@@ -543,6 +554,11 @@
                 time: document.getElementById('dinner-time')
             };
             const leftoverRadios = Array.from(document.querySelectorAll('input[name="leftovers"]'));
+            const cookFrozenToggle = document.getElementById('cook-frozen');
+            const frozenTag = document.getElementById('frozen-tag');
+            const thawItem = document.getElementById('item-thaw');
+            const temperItem = document.getElementById('item-temper');
+            const icsHint = document.querySelector('.cal-hint');
 
             const outputs = {
                 turkey: document.getElementById('g-turkey'),
@@ -697,6 +713,7 @@
                     children: inputs.children.value,
                     bigEaters: inputs.bigEaters.value,
                     leftoverMode,
+                    cookFromFrozen: cookFrozenToggle.checked,
                     dinnerTime: targetDinnerTime
                 });
 
@@ -736,16 +753,23 @@
                         b: inputs.bigEaters.value,
                         c: inputs.children.value,
                         t: inputs.time.value,
-                        l: leftoverRadios.find(r => r.checked)?.value || 'none'
+                        l: leftoverRadios.find(r => r.checked)?.value || 'none',
+                        f: cookFrozenToggle.checked ? '1' : '0'
                     }));
                 } catch (err) { /* private mode / storage disabled */ }
 
             // B. Timeline
             timeline.restDate.textContent = formatDate(tl.restAt);
             timeline.ovenDate.textContent = formatDate(tl.ovenAt);
-            timeline.temperDate.textContent = formatDate(tl.temperAt);
-            timeline.thawDate.textContent = formatDate(tl.thawAt);
+            // A frozen bird skips the thaw and temper milestones entirely
+            thawItem.hidden = !!tl.frozen;
+            temperItem.hidden = !!tl.frozen;
+            frozenTag.hidden = !tl.frozen;
+            if (tl.temperAt) timeline.temperDate.textContent = formatDate(tl.temperAt);
+            if (tl.thawAt) {
+                timeline.thawDate.textContent = formatDate(tl.thawAt);
                 timeline.thawDays.textContent = formatNum(tl.thawDays);
+            }
 
                 // B'. Side-dish start times: remember the latest plan, then
                 // (re)render only the dishes the user has selected
@@ -753,17 +777,22 @@
                 latestDinnerTime = targetDinnerTime;
                 renderSideSchedule();
 
-                // C. Calendar links follow the current plan
+                // C. Calendar links follow the current plan (keyed by uid —
+                // thaw/temper drop out when roasting from frozen)
                 const events = milestoneEvents({ grocery, timeline: tl }, targetDinnerTime);
-                gcalLinks.thaw.href = buildGoogleCalendarUrl(events[0]);
-                gcalLinks.temper.href = buildGoogleCalendarUrl(events[1]);
-                gcalLinks.oven.href = buildGoogleCalendarUrl(events[2]);
-                gcalLinks.rest.href = buildGoogleCalendarUrl(events[3]);
+                const byUid = Object.fromEntries(events.map((e) => [e.uid, e]));
+                for (const key of Object.keys(gcalLinks)) {
+                    const ev = byUid[key];
+                    gcalLinks[key].hidden = !ev;
+                    if (ev) gcalLinks[key].href = buildGoogleCalendarUrl(ev);
+                }
+                icsHint.textContent = `All ${events.length} events with pop-up reminders — imports into Google, Apple or Outlook Calendar`;
                 currentPlan = { grocery, timeline: tl, dinnerTime: targetDinnerTime };
             };
 
             // 3. Attach Event Listeners for real-time reactivity
             leftoverRadios.forEach((r) => r.addEventListener('change', calculateAll));
+            cookFrozenToggle.addEventListener('change', calculateAll);
             Object.values(inputs).forEach(inputElement => {
                 inputElement.addEventListener('input', calculateAll);
                 inputElement.addEventListener('change', calculateAll);
@@ -791,6 +820,7 @@
                 if (params.get('b')) inputs.bigEaters.value = params.get('b');
                 if (params.get('c')) inputs.children.value = params.get('c');
                 if (params.get('t')) inputs.time.value = params.get('t');
+                if (params.has('f')) cookFrozenToggle.checked = params.get('f') === '1';
                 const mode = params.get('l');
                 if (mode) leftoverRadios.forEach(r => { r.checked = (r.value === mode); });
             };
@@ -810,6 +840,7 @@
                     // '-' = nothing selected (an empty value would be ambiguous)
                     params.set('s', sideSelection.size ? Array.from(sideSelection).join(',') : '-');
                 }
+                if (cookFrozenToggle.checked) params.set('f', '1');
                 const url = `${location.origin}${location.pathname}?${params}`;
                 try {
                     await navigator.clipboard.writeText(url);
@@ -843,7 +874,7 @@
                     }
                 } catch (err) { /* private mode / corrupt data */ }
             }
-            if (urlParams.has('a') || urlParams.has('c') || urlParams.has('t') || urlParams.has('l')) {
+            if (urlParams.has('a') || urlParams.has('c') || urlParams.has('t') || urlParams.has('l') || urlParams.has('f')) {
                 applyParams(urlParams);
             } else {
                 try {

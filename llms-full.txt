@@ -14,7 +14,7 @@ Think of it as a scaffold for first-time hosts, not a prophecy: the math gets yo
 
 ### Reverse schedule timeline
 
-Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting, tempering and thawing time from your dinner time and tells you exactly when to start each step — no mental math. It also flags that some turkeys are sold as cook-from-frozen, which skips the thaw step entirely (add about 50% more roast time).
+Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting, tempering and thawing time from your dinner time and tells you exactly when to start each step — no mental math. Cooking a cook-from-frozen bird? Flip the "Frozen bird" toggle: the thaw and temper milestones disappear, the roast time scales by +50%, and the calendar events update automatically.
 
 ### Side-dish start times, not just the turkey
 

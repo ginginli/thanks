@@ -4,316 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HostCalc Pro - Thanksgiving Feast Planner</title>
+
+    <meta name="description" content="Thanksgiving calculator that works backwards from dinner time: get your turkey thaw and oven schedule, plus a grocery list scaled to your guests.">
+
+    <meta property="og:title" content="HostCalc Pro - Thanksgiving Feast Planner">
+    <meta property="og:description" content="Reverse-engineer your Thanksgiving: thaw timeline, oven schedule, and grocery quantities scaled to your guest count.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hostcalc.pro/">
+    <meta property="og:site_name" content="HostCalc Pro">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://hostcalc.pro/">
+
+    <link rel="icon" href="favicon-48.png" sizes="48x48">
+    <link rel="icon" href="favicon-192.png" sizes="192x192">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <link rel="preload" href="fonts/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgEM86xQ.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2" as="font" type="font/woff2" crossorigin>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "HostCalc Pro",
+        "alternateName": "Thanksgiving Feast Planner",
+        "url": "https://hostcalc.pro/",
+        "dateModified": "2026-10-10",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "description": "Thanksgiving reverse schedule and grocery scale: enter guests and dinner time to get thaw, oven and rest milestones plus per-item grocery quantities.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": [
+            "Reverse-engineered cooking timeline (thaw, oven, rest)",
+            "Grocery quantities scaled by adults and children",
+            "Leftover planning with a 30% turkey buffer"
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "How much turkey do I need per person?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Plan on 1.5 lbs of whole turkey per adult; children under 12 count as half. For 8 adults and 2 kids, that's a 17–18 lb bird. Turn on leftovers for a 30% buffer."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "When should I move my turkey to the fridge to thaw?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Fridge thawing takes about one day per 4 lbs, so a 17.6 lb turkey needs roughly 4.4 days. HostCalc Pro back-calculates the exact date and time from your dinner time."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How long does a turkey take to cook?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "At 325°F / 165°C, budget about 15 minutes per pound, then rest the bird for 45 minutes after pulling it at 165°F internal temperature."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do children eat as much as adults?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No — each child under 12 is counted as half an adult across the grocery list, except for dinner rolls (one per child) and wine (adults only)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is my data stored anywhere?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent to any server."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "HostCalc Pro",
+        "alternateName": "Thanksgiving Feast Planner",
+        "url": "https://hostcalc.pro/",
+        "inLanguage": "en"
+    }
+    </script>
+
     
-    <style>
-        :root {
-            /* Minimalist Base Colors */
-            --color-bg: #F5F5F7;          /* Classic Apple light gray background */
-            --color-surface: #FFFFFF;     /* Pure white for cards */
-            --color-input-bg: #F2F2F7;    /* Borderless input background */
-            
-            /* Text Colors */
-            --color-text-main: #1D1D1F;   /* Deep gray for primary text */
-            --color-text-muted: #86868B;  /* Silver gray for secondary text */
-            --color-border: #E5E5EA;      /* Subtle borders */
-            
-            /* Thanksgiving Theme Accents */
-            --color-primary: #E56020;         /* Pumpkin / Roast Orange */
-            --color-primary-soft: #FFF0E8;    /* Soft Orange background */
-            --color-primary-hover: #CC551C;   
-            
-            /* Timeline Step Colors */
-            --color-step-1: #4382F6;      /* Thaw (Cold Blue) */
-            --color-step-2: #E56020;      /* Oven (Hot Orange) */
-            --color-step-3: #34C759;      /* Rest (Done Green) */
-            
-            /* Shadows & Radii */
-            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.04);
-            --shadow-hover: 0 10px 32px rgba(0, 0, 0, 0.08);
-            --radius-card: 24px;
-            --radius-input: 16px;
-            
-            /* Typography */
-            --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--color-bg);
-            color: var(--color-text-main);
-            font-family: var(--font-sans);
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.5;
-            padding: var(--spacing-lg) 16px;
-        }
-
-        .container {
-            max-width: 680px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-lg);
-        }
-
-        header {
-            text-align: center;
-            padding: var(--spacing-md) 0;
-        }
-
-        header h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 4px;
-        }
-
-        header p {
-            color: var(--color-text-muted);
-            font-size: 1.05rem;
-            font-weight: 500;
-        }
-
-        .card {
-            background-color: var(--color-surface);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-card);
-            padding: var(--spacing-lg);
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: var(--spacing-lg);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .icon-badge {
-            background-color: var(--color-primary);
-            color: var(--color-surface);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--color-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .apple-input {
-            background-color: var(--color-input-bg);
-            color: var(--color-text-main);
-            border: 2px solid transparent;
-            border-radius: var(--radius-input);
-            padding: 14px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-align: center;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            width: 100%;
-        }
-
-        .apple-input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            background-color: var(--color-surface);
-            box-shadow: 0 0 0 4px rgba(229, 96, 32, 0.1);
-        }
-
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none; margin: 0;
-        }
-
-        .toggle-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: var(--spacing-md);
-            margin-top: var(--spacing-md);
-            border-top: 1px solid var(--color-border);
-        }
-
-        .toggle-text {
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .toggle-subtext {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--color-text-muted);
-            font-weight: 400;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 30px;
-            flex-shrink: 0;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--color-border);
-            transition: .3s;
-            border-radius: 30px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px; width: 26px;
-            left: 2px; bottom: 2px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        input:checked + .slider { background-color: var(--color-primary); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        .timeline {
-            position: relative;
-            padding-left: 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0; left: 11px;
-            width: 2px;
-            background-color: var(--color-input-bg);
-        }
-
-        .timeline-item {
-            position: relative;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -28px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: var(--color-surface);
-            border: 3px solid;
-            z-index: 1;
-        }
-
-        .dot-1 { border-color: var(--color-step-1); }
-        .dot-2 { border-color: var(--color-step-2); }
-        .dot-3 { border-color: var(--color-step-3); }
-
-        .timeline-date {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--color-text-main);
-        }
-
-        .timeline-desc {
-            font-size: 0.9rem;
-            color: var(--color-text-muted);
-            margin-top: 4px;
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 16px;
-        }
-
-        .grocery-card {
-            background-color: var(--color-input-bg);
-            border-radius: var(--radius-input);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-        }
-
-        .grocery-card:hover {
-            transform: translateY(-2px);
-            background-color: #EBEBEF;
-        }
-
-        .grocery-card.highlight {
-            grid-column: 1 / -1;
-            background-color: var(--color-primary-soft);
-            color: var(--color-primary);
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .grocery-card.highlight .g-name { color: var(--color-primary-hover); }
-        .grocery-card.highlight .g-value { color: var(--color-primary); font-size: 2.2rem; }
-        
-        .g-icon { font-size: 1.6rem; margin-bottom: 4px; }
-        .g-name { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
-        .g-value { font-size: 1.6rem; font-weight: 700; display: flex; align-items: baseline; gap: 4px;}
-        .g-unit { font-size: 0.85rem; font-weight: 600; opacity: 0.7; }
-
-        @media (max-width: 500px) {
-            .input-grid { grid-template-columns: 1fr; }
-            .results-grid { grid-template-columns: 1fr 1fr; }
-            .grocery-card.highlight { flex-direction: column; align-items: flex-start; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
         
         <header>
-            <h1>HostCalc.pro</h1>
+            <h1>HostCalc<span class="h1-accent">.pro</span> <span class="h1-keyword">Thanksgiving Feast Planner</span></h1>
             <p>Thanksgiving Reverse Schedule & Grocery Scale</p>
         </header>
 
         <!-- Step 1: Parameters -->
-        <section class="card">
+        <section class="card" id="step-params">
             <h2 class="section-title">
                 <span class="icon-badge">1</span> 
                 Event Parameters
@@ -341,14 +143,14 @@
                     <span class="toggle-subtext">Scales turkey weight by 30% for tomorrow</span>
                 </div>
                 <label class="switch">
-                    <input type="checkbox" id="leftovers" checked>
+                    <input type="checkbox" id="leftovers" checked aria-label="Include leftovers: scale turkey weight by 30%">
                     <span class="slider"></span>
                 </label>
             </div>
         </section>
 
         <!-- Step 2: Timeline -->
-        <section class="card">
+        <section class="card" id="step-timeline">
             <h2 class="section-title">
                 <span class="icon-badge" style="background-color: var(--color-step-1);">2</span> 
                 Reverse Schedule Timeline
@@ -357,26 +159,26 @@
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-dot dot-1"></div>
-                    <div class="timeline-date" id="time-thaw">Nov 22, 4:00 PM</div>
-                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">3.5</span> days)</div>
+                    <div class="timeline-date" id="time-thaw">Sun, Nov 22, 1:33 AM</div>
+                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)</div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-2"></div>
-                    <div class="timeline-date" id="time-oven">Nov 26, 12:00 PM</div>
+                    <div class="timeline-date" id="time-oven">Thu, Nov 26, 10:51 AM</div>
                     <div class="timeline-desc">Put turkey in oven at 325°F / 165°C</div>
                 </div>
 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-3"></div>
-                    <div class="timeline-date" id="time-rest">Nov 26, 3:15 PM</div>
+                    <div class="timeline-date" id="time-rest">Thu, Nov 26, 3:15 PM</div>
                     <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)</div>
                 </div>
             </div>
         </section>
 
         <!-- Step 3: Groceries -->
-        <section class="card">
+        <section class="card" id="step-groceries">
             <h2 class="section-title">
                 <span class="icon-badge" style="background-color: var(--color-text-main);">3</span> 
                 Grocery Targets
@@ -389,7 +191,7 @@
                         <div class="g-icon">🦃</div>
                         <div class="g-name">Whole Turkey</div>
                     </div>
-                    <div class="g-value"><span id="g-turkey">14.0</span> <span class="g-unit">lbs</span></div>
+                    <div class="g-value"><span id="g-turkey">17.6</span> <span class="g-unit">lbs</span></div>
                 </div>
 
                 <div class="grocery-card">
@@ -401,7 +203,7 @@
                 <div class="grocery-card">
                     <div class="g-icon">🥔</div>
                     <div class="g-name">Potatoes</div>
-                    <div class="g-value"><span id="g-potatoes">3.2</span> <span class="g-unit">lbs</span></div>
+                    <div class="g-value"><span id="g-potatoes">3.1</span> <span class="g-unit">lbs</span></div>
                 </div>
 
                 <div class="grocery-card">
@@ -413,13 +215,13 @@
                 <div class="grocery-card">
                     <div class="g-icon">🍒</div>
                     <div class="g-name">Cranberry Sauce</div>
-                    <div class="g-value"><span id="g-cranberry">18.0</span> <span class="g-unit">fl oz</span></div>
+                    <div class="g-value"><span id="g-cranberry">18</span> <span class="g-unit">fl oz</span></div>
                 </div>
 
                 <div class="grocery-card">
                     <div class="g-icon">🧀</div>
                     <div class="g-name">Cheese</div>
-                    <div class="g-value"><span id="g-cheese">18.0</span> <span class="g-unit">oz</span></div>
+                    <div class="g-value"><span id="g-cheese">18</span> <span class="g-unit">oz</span></div>
                 </div>
 
                 <div class="grocery-card">
@@ -443,11 +245,90 @@
                 <div class="grocery-card">
                     <div class="g-icon">🍷</div>
                     <div class="g-name">Wine</div>
-                    <div class="g-value"><span id="g-wine">6.0</span> <span class="g-unit">btls</span></div>
+                    <div class="g-value"><span id="g-wine">5.6</span> <span class="g-unit">btls</span></div>
                 </div>
 
             </div>
         </section>
+
+        <!-- SEO Content: What is → Key Features → How to Use → Why Choose → FAQ -->
+        <div id="seo-content">
+
+            <section class="card prose">
+                <h2 class="section-title">
+                    <span class="icon-badge" style="background-color: var(--color-primary);">?</span>
+                    What is HostCalc Pro?
+                </h2>
+                <p><strong>HostCalc Pro</strong> is a free online <strong>Thanksgiving calculator</strong> that works backwards from the moment you want to sit down for dinner. Tell it how many adults and children are coming and your target dinner time, and it reverse-engineers the entire evening: when to move the turkey from the freezer to the fridge, when it goes into the oven, and when to pull it at 165 °F — plus a complete <strong>Thanksgiving grocery list</strong> scaled to your exact headcount.</p>
+            </section>
+
+            <section class="card prose">
+                <h2 class="section-title">
+                    <span class="icon-badge" style="background-color: var(--color-step-1);">★</span>
+                    Key Features
+                </h2>
+                <h3>Reverse schedule timeline</h3>
+                <p>Most <strong>turkey calculators</strong> only tell you how long to cook. HostCalc Pro subtracts resting, roasting and thawing time from your dinner time and tells you exactly when to start each step — no mental math.</p>
+                <h3>Grocery list scaled per person</h3>
+                <p>Turkey, stuffing, potatoes, veggie sides, cranberry sauce, cheese, appetizers, dinner rolls, pies and wine — each sized from per-person portion rules, in practical shopping units (lbs, oz, pieces, bottles).</p>
+                <h3>Leftover planning built in</h3>
+                <p>One toggle adds a 30% turkey buffer, so tomorrow's sandwiches are already accounted for before you buy the bird.</p>
+                <h3>Real-time, right in your browser</h3>
+                <p>Every input recalculates the timeline and grocery targets instantly. Nothing is uploaded, and there is nothing to sign up for.</p>
+            </section>
+
+            <section class="card prose">
+                <h2 class="section-title">
+                    <span class="icon-badge" style="background-color: var(--color-step-2);">1</span>
+                    How to Use
+                </h2>
+                <ol>
+                    <li><strong>Enter your headcount</strong> — adults, plus children under 12 (counted as half portions).</li>
+                    <li><strong>Set your target dinner time</strong> — it defaults to Thanksgiving dinner at 4:00 PM and snaps back to the nearest Thanksgiving if cleared.</li>
+                    <li><strong>Toggle leftovers</strong> on or off, then read your reverse schedule and grocery targets. Everything updates live as you type.</li>
+                </ol>
+            </section>
+
+            <section class="card prose">
+                <h2 class="section-title">
+                    <span class="icon-badge" style="background-color: var(--color-step-3);">✓</span>
+                    Why Choose HostCalc Pro?
+                </h2>
+                <ul>
+                    <li><strong>It plans around your dinner time, not the bird.</strong> Reverse engineering means the schedule always lands exactly on your target hour.</li>
+                    <li><strong>Free, private, no sign-up.</strong> All calculations run locally in your browser — your guest list never leaves your device.</li>
+                    <li><strong>Shoppable units.</strong> Results come in pounds, ounces, pieces and bottles, ready for the grocery aisle.</li>
+                    <li><strong>Mobile-friendly.</strong> Pull up the timeline mid-store with one hand.</li>
+                </ul>
+            </section>
+
+            <section class="card prose">
+                <h2 class="section-title">
+                    <span class="icon-badge" style="background-color: var(--color-text-main);">Q</span>
+                    FAQ
+                </h2>
+
+                <h3>How much turkey do I need per person?</h3>
+                <p>Plan on <strong>1.5 lbs of whole turkey per adult</strong>; children under 12 count as half. For 8 adults and 2 kids, that's a 17–18 lb bird. Turn on leftovers for a 30% buffer.</p>
+
+                <h3>When should I move my turkey to the fridge to thaw?</h3>
+                <p>Fridge thawing takes about <strong>one day per 4 lbs</strong>, so a 17.6 lb turkey needs roughly 4.4 days, per the <a href="https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/turkey-farm-table" target="_blank" rel="noopener">USDA safe thawing guide</a>. HostCalc Pro back-calculates the exact date and time from your dinner time.</p>
+
+                <h3>How long does a turkey take to cook?</h3>
+                <p>At 325 °F / 165 °C, budget about <strong>15 minutes per pound</strong>, then rest the bird for 45 minutes after pulling it at 165 °F internal temperature — the safe minimum recommended by the <a href="https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/turkey-basics-safe-cooking" target="_blank" rel="noopener">USDA FSIS</a>.</p>
+
+                <h3>Do children eat as much as adults?</h3>
+                <p>No — each child under 12 is counted as half an adult across the grocery list, except for dinner rolls (one per child) and wine (adults only).</p>
+
+                <h3>Is my data stored anywhere?</h3>
+                <p>No. HostCalc Pro is a single static page — every calculation runs in your browser and nothing is sent to any server.</p>
+            </section>
+
+        </div>
+
+        <footer class="site-footer">
+            <p>Last updated October 2026 · HostCalc Pro · <a href="mailto:hello@hostcalc.pro">hello@hostcalc.pro</a></p>
+        </footer>
 
     </div>
 
@@ -496,6 +377,22 @@
                 }).format(dateObj);
             };
 
+            // Thanksgiving = 4th Thursday of November, dinner at 4:00 PM
+            const pad = (n) => String(n).padStart(2, '0');
+            const toInputValue = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+            const thanksgivingOf = (year) => {
+                const first = new Date(year, 10, 1);
+                const firstThursday = 1 + ((4 - first.getDay() + 7) % 7);
+                return new Date(year, 10, firstThursday + 21, 16, 0);
+            };
+
+            const nearestThanksgiving = () => {
+                const now = new Date();
+                const thisYear = thanksgivingOf(now.getFullYear());
+                return now > thisYear ? thanksgivingOf(now.getFullYear() + 1) : thisYear;
+            };
+
             // 3. Core Calculation Engine
             const calculateAll = () => {
                 // Parse inputs
@@ -503,10 +400,11 @@
                 const C = parseInt(inputs.children.value) || 0;
                 const wantsLeftovers = inputs.leftovers.checked;
                 
-                // Fallback to current date if input is cleared
+                // Fallback to the nearest Thanksgiving if input is cleared/invalid
                 let targetDinnerTime = new Date(inputs.time.value);
                 if (isNaN(targetDinnerTime.getTime())) {
-                    targetDinnerTime = new Date(); 
+                    targetDinnerTime = nearestThanksgiving();
+                    inputs.time.value = toInputValue(targetDinnerTime);
                 }
 
                 // Equivalent Adults (Children eat roughly half)
@@ -571,6 +469,11 @@
                 inputElement.addEventListener('input', calculateAll);
                 inputElement.addEventListener('change', calculateAll);
             });
+
+            // If the hardcoded default has gone stale (in the past), jump to the nearest Thanksgiving
+            if (new Date(inputs.time.value) < new Date()) {
+                inputs.time.value = toInputValue(nearestThanksgiving());
+            }
 
             // Initial calculation on load
             calculateAll();

@@ -294,16 +294,16 @@
                     <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)
                         <a class="cal-link" id="gcal-thaw" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
                     </div>
-                    <div class="timeline-note">⚠️ Check the packaging first: some turkeys are sold as <strong>cook-from-frozen</strong> — those skip this thaw step entirely and go straight from freezer to oven (add ~50% more roast time).</div>
+                    <div class="timeline-note">Fridge thaw needs about <span id="days-thaw">4.4</span> days (1 day per 4 lb). ⚠️ Check the packaging first: some turkeys are sold as <strong>cook-from-frozen</strong> — those skip this thaw step and go straight from freezer to oven (add ~50% more roast time).</div>
                 </div>
-                
+
                 <div class="timeline-item">
                     <div class="timeline-dot dot-2"></div>
                     <div class="timeline-date" id="time-temper">Thu, Nov 26, 10:16 AM</div>
                     <div class="timeline-desc">Take turkey out of the fridge to temper (30 mins)
                         <a class="cal-link" id="gcal-temper" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
                     </div>
-                    <div class="timeline-note">Bringing the bird close to room temperature helps it cook evenly — 30 minutes is enough; never leave it out longer than two hours (food safety).</div>
+                    <div class="timeline-note">A short counter rest helps the bird cook evenly — 30 minutes is enough; never leave it out longer than two hours (food safety).</div>
                 </div>
 
                 <div class="timeline-item">
@@ -312,6 +312,7 @@
                     <div class="timeline-desc">Put turkey in oven at 325°F / 165°C
                         <a class="cal-link" id="gcal-oven" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
                     </div>
+                    <div class="timeline-note">Follow the USDA weight timetable for this bird. If the skin browns too quickly, tent it loosely with foil.</div>
                 </div>
 
                 <div class="timeline-item">
@@ -320,21 +321,21 @@
                     <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)
                         <a class="cal-link" id="gcal-rest" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
                     </div>
+                    <div class="timeline-note">Pull when the thickest part of the breast reaches 165°F, then rest 45 minutes so the juices redistribute before carving.</div>
                 </div>
             </div>
-
-            <ol class="cook-steps">
-                <li><strong>Thaw</strong> — move to the fridge, one day per 4 lbs (date above)</li>
-                <li><strong>Temper</strong> — take the bird out ~30 min before roasting to take the chill off</li>
-                <li><strong>Roast</strong> — 325°F / 165°C, USDA weight timetable; tent with foil if the skin browns too fast</li>
-                <li><strong>Check</strong> — pull at 165°F internal temperature</li>
-                <li><strong>Rest</strong> — 45 minutes before carving</li>
-            </ol>
 
             <div class="side-schedule-head">
                 <h3>Side-Dish Start Times</h3>
                 <span class="side-schedule-sub">Stovetop &amp; counter tasks — the oven is busy with the bird</span>
+                <label class="side-toggle">
+                    <input type="checkbox" id="side-visible" checked>
+                    <span class="side-toggle-track" aria-hidden="true"><span class="side-toggle-thumb"></span></span>
+                    <span class="side-toggle-label">Show</span>
+                </label>
             </div>
+            <div class="side-chips" id="side-chips"></div>
+            <p class="side-empty" id="side-empty" hidden>No sides selected — tick the dishes you're making above to get their start times.</p>
             <ul class="side-schedule" id="side-schedule"></ul>
 
             <div class="cal-footer">
@@ -532,7 +533,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const { planFeast, practicalNotes, nearestThanksgiving, toInputValue, formatNum, formatDate,
-                    buildGoogleCalendarUrl, buildICS, milestoneEvents } = ThanksgivingPlanner;
+                    buildGoogleCalendarUrl, buildICS, milestoneEvents, SIDE_SCHEDULE } = ThanksgivingPlanner;
 
             // 1. Map all interactive DOM elements
             const inputs = {
@@ -583,6 +584,9 @@
             const icsButton = document.getElementById('ics-download');
             const breastHint = document.getElementById('turkey-breast-hint');
             const sideScheduleEl = document.getElementById('side-schedule');
+            const sideChipsEl = document.getElementById('side-chips');
+            const sideEmptyEl = document.getElementById('side-empty');
+            const sideVisibleToggle = document.getElementById('side-visible');
             const twoBirdHint = document.getElementById('two-bird-hint');
             const twoBirdSplit = document.getElementById('two-bird-split');
             const shareButton = document.getElementById('share-plan');
@@ -590,9 +594,92 @@
             const restoreDesc = document.getElementById('restore-desc');
             const restoreLink = document.getElementById('restore-link');
             const STORAGE_KEY = 'hostcalc:last-plan';
+            const SIDES_STORAGE_KEY = 'hostcalc:sides';
 
             // Latest plan, kept for the .ics download button
             let currentPlan = null;
+
+            // 2'. Side-dish selection: which dishes to schedule (chips) and
+            // whether the schedule is visible at all (toggle)
+            let latestSides = [];
+            let latestDinnerTime = null;
+            const ALL_SIDE_KEYS = SIDE_SCHEDULE.map((s) => s.key);
+            let sideSelection = new Set(ALL_SIDE_KEYS);
+
+            const saveSidePrefs = () => {
+                try {
+                    localStorage.setItem(SIDES_STORAGE_KEY, JSON.stringify({
+                        on: sideVisibleToggle.checked,
+                        keys: Array.from(sideSelection)
+                    }));
+                } catch (err) { /* private mode / storage disabled */ }
+            };
+
+            // Build one chip per known side dish; unchecking removes it
+            // from the schedule below
+            for (const side of SIDE_SCHEDULE) {
+                const label = document.createElement('label');
+                label.className = 'side-chip';
+                const box = document.createElement('input');
+                box.type = 'checkbox';
+                box.checked = true;
+                box.dataset.sideKey = side.key;
+                box.addEventListener('change', () => {
+                    if (box.checked) sideSelection.add(side.key);
+                    else sideSelection.delete(side.key);
+                    renderSideSchedule();
+                    saveSidePrefs();
+                });
+                const text = document.createElement('span');
+                text.textContent = `${side.icon} ${side.name}`;
+                label.append(box, text);
+                sideChipsEl.appendChild(label);
+            }
+
+            // Day-before items get a weekday label, same-day items just the clock time
+            const renderSideSchedule = () => {
+                const selected = latestSides.filter((s) => sideSelection.has(s.key));
+                sideEmptyEl.hidden = selected.length > 0;
+                const sameDayFmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+                sideScheduleEl.innerHTML = '';
+                for (const side of selected) {
+                    const isAhead = latestDinnerTime &&
+                        side.startAt.getTime() < latestDinnerTime.getTime() - 20 * 60 * 60 * 1000;
+                    const when = isAhead
+                        ? new Intl.DateTimeFormat('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(side.startAt)
+                        : sameDayFmt.format(side.startAt);
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="side-time">${when}</span>` +
+                        `<span class="side-name">${side.icon} ${side.name}</span>` +
+                        `<span class="side-action">${side.action}</span>`;
+                    sideScheduleEl.appendChild(li);
+                }
+            };
+
+            const applySideVisibility = () => {
+                const visible = sideVisibleToggle.checked;
+                sideChipsEl.hidden = !visible;
+                sideScheduleEl.hidden = !visible;
+                sideEmptyEl.hidden = !visible || sideScheduleEl.children.length > 0;
+            };
+
+            sideVisibleToggle.addEventListener('change', () => {
+                applySideVisibility();
+                saveSidePrefs();
+            });
+
+            const applySideParams = (on, keys) => {
+                if (typeof on === 'boolean') sideVisibleToggle.checked = on;
+                if (Array.isArray(keys)) {
+                const valid = keys.filter((k) => ALL_SIDE_KEYS.includes(k));
+                if (valid.length > 0 || keys.length === 0) sideSelection = new Set(valid);
+                }
+                sideChipsEl.querySelectorAll('input[type="checkbox"]').forEach((box) => {
+                    box.checked = sideSelection.has(box.dataset.sideKey);
+                });
+                renderSideSchedule();
+                applySideVisibility();
+            };
 
             // 2. Core Calculation Engine (pure logic lives in calculator.js)
             const calculateAll = () => {
@@ -660,21 +747,11 @@
             timeline.thawDate.textContent = formatDate(tl.thawAt);
                 timeline.thawDays.textContent = formatNum(tl.thawDays);
 
-                // B'. Side-dish start times: day-before items get a weekday
-                // label, same-day items just the clock time
-                const sameDayFmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
-                sideScheduleEl.innerHTML = '';
-                for (const side of sides) {
-                    const isAhead = side.startAt.getTime() < targetDinnerTime.getTime() - 20 * 60 * 60 * 1000;
-                    const when = isAhead
-                        ? new Intl.DateTimeFormat('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(side.startAt)
-                        : sameDayFmt.format(side.startAt);
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span class="side-time">${when}</span>` +
-                        `<span class="side-name">${side.icon} ${side.name}</span>` +
-                        `<span class="side-action">${side.action}</span>`;
-                    sideScheduleEl.appendChild(li);
-                }
+                // B'. Side-dish start times: remember the latest plan, then
+                // (re)render only the dishes the user has selected
+                latestSides = sides;
+                latestDinnerTime = targetDinnerTime;
+                renderSideSchedule();
 
                 // C. Calendar links follow the current plan
                 const events = milestoneEvents({ grocery, timeline: tl }, targetDinnerTime);
@@ -726,6 +803,13 @@
                     t: inputs.time.value,
                     l: leftoverRadios.find(r => r.checked)?.value || 'none'
                 });
+                // Side-dish choices travel with the link, but only when the
+                // user deviates from the default (all dishes, visible)
+                if (!sideVisibleToggle.checked) params.set('sv', '0');
+                if (sideSelection.size !== ALL_SIDE_KEYS.length) {
+                    // '-' = nothing selected (an empty value would be ambiguous)
+                    params.set('s', sideSelection.size ? Array.from(sideSelection).join(',') : '-');
+                }
                 const url = `${location.origin}${location.pathname}?${params}`;
                 try {
                     await navigator.clipboard.writeText(url);
@@ -744,6 +828,21 @@
 
             // Restore: a shared link wins; otherwise offer the locally saved plan
             const urlParams = new URLSearchParams(location.search);
+            if (urlParams.has('s') || urlParams.has('sv')) {
+                applySideParams(
+                    urlParams.has('sv') ? urlParams.get('sv') !== '0' : undefined,
+                    urlParams.has('s')
+                        ? (urlParams.get('s') === '-' ? [] : urlParams.get('s').split(','))
+                        : undefined
+                );
+            } else {
+                try {
+                    const savedSides = JSON.parse(localStorage.getItem(SIDES_STORAGE_KEY));
+                    if (savedSides && (savedSides.on === false || Array.isArray(savedSides.keys))) {
+                        applySideParams(savedSides.on !== false, savedSides.keys);
+                    }
+                } catch (err) { /* private mode / corrupt data */ }
+            }
             if (urlParams.has('a') || urlParams.has('c') || urlParams.has('t') || urlParams.has('l')) {
                 applyParams(urlParams);
             } else {

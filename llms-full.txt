@@ -18,7 +18,7 @@ Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts r
 
 ### Side-dish start times, not just the turkey
 
-Each side gets its own countdown: when to simmer the cranberry sauce (a day ahead), when to start the potatoes, when to warm the rolls during the rest window — so everything lands on the table hot at the same minute.
+Each side gets its own countdown: when to simmer the cranberry sauce (a day ahead), when to start the potatoes, when to warm the rolls during the rest window — so everything lands on the table hot at the same minute. A show/hide switch collapses the whole side schedule, and chip-style checkboxes let you select exactly which dishes you're making (the selection travels with share links and is remembered on your device).
 
 ### Grocery list scaled per person
 

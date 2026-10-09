@@ -418,16 +418,6 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--color-text-muted);
 }
 
-.cook-steps {
-    margin: 20px 0 0;
-    padding-left: 20px;
-    font-size: 0.88rem;
-    color: var(--color-text-muted);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
 .side-schedule-head {
     margin: 24px 0 8px;
     display: flex;
@@ -444,6 +434,121 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .side-schedule-sub {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+}
+
+/* Show/hide switch for the side-dish schedule */
+.side-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.side-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.side-toggle-track {
+    position: relative;
+    flex: none;
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+    background: var(--color-input-bg);
+    transition: background-color 0.2s ease;
+}
+
+.side-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+}
+
+.side-toggle input:checked + .side-toggle-track {
+    background: var(--color-step-3);
+}
+
+.side-toggle input:checked + .side-toggle-track .side-toggle-thumb {
+    transform: translateX(16px);
+}
+
+.side-toggle input:focus-visible + .side-toggle-track {
+    outline: 2px solid var(--color-step-3);
+    outline-offset: 2px;
+}
+
+.side-toggle-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+}
+
+/* Selectable side-dish chips */
+.side-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 16px;
+}
+
+.side-chip {
+    position: relative;
+}
+
+.side-chip input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.side-chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.side-chip:hover span {
+    border-color: var(--color-primary-hover);
+}
+
+.side-chip input:checked + span {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+.side-chip input:focus-visible + span {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.side-empty {
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-radius: var(--radius-input);
+    background: var(--color-input-bg);
     font-size: 0.78rem;
     color: var(--color-text-muted);
 }

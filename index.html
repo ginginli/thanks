@@ -143,8 +143,8 @@
         "@context": "https://schema.org",
         "@type": "HowTo",
         "name": "How to cook a Thanksgiving turkey",
-        "description": "The four steps from freezer to table, scheduled backwards from your dinner time.",
-        "totalTime": "PT4H",
+        "description": "The five steps from freezer to table, scheduled backwards from your dinner time.",
+        "totalTime": "PT4H30M",
         "step": [
             {
                 "@type": "HowToStep",
@@ -155,18 +155,24 @@
             {
                 "@type": "HowToStep",
                 "position": 2,
-                "name": "Roast",
-                "text": "Put the turkey into a 325°F / 165°C oven following the USDA weight timetable, roughly 13 to 22 minutes per pound depending on the bird's size."
+                "name": "Temper",
+                "text": "Take the turkey out of the fridge about 30 minutes before roasting to take the chill off — it cooks more evenly from near room temperature."
             },
             {
                 "@type": "HowToStep",
                 "position": 3,
+                "name": "Roast",
+                "text": "Put the turkey into a 325°F / 165°C oven following the USDA weight timetable, roughly 13 to 22 minutes per pound depending on the bird's size. If the skin browns too fast, tent it loosely with foil."
+            },
+            {
+                "@type": "HowToStep",
+                "position": 4,
                 "name": "Check temperature",
                 "text": "Pull the turkey when the internal temperature reaches 165°F at the thickest part of the breast."
             },
             {
                 "@type": "HowToStep",
-                "position": 4,
+                "position": 5,
                 "name": "Rest",
                 "text": "Let the turkey rest for 45 minutes before carving so the juices redistribute."
             }
@@ -261,7 +267,7 @@
             </div>
 
             <p class="serving-hint">
-                💡 New to hosting? This planner gets you 90% of the way there — then pad the numbers a little for big eaters and to-go plates. Experienced hosts: you already know your family (and yes, somebody always wants extra rolls).
+                💡 New to hosting? This planner handles the math — then add a few extra servings for the big eaters and the to-go plates. Experienced hosts: you already know your family (and yes, somebody always wants extra rolls).
             </p>
 
             <div class="share-row">
@@ -288,6 +294,7 @@
                     <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)
                         <a class="cal-link" id="gcal-thaw" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
                     </div>
+                    <div class="timeline-note">⚠️ Check the packaging first: some turkeys are sold as <strong>cook-from-frozen</strong> — those skip this thaw step entirely and go straight from freezer to oven (add ~50% more roast time).</div>
                 </div>
                 
                 <div class="timeline-item">
@@ -309,10 +316,17 @@
 
             <ol class="cook-steps">
                 <li><strong>Thaw</strong> — move to the fridge, one day per 4 lbs (date above)</li>
-                <li><strong>Roast</strong> — 325°F / 165°C, USDA weight timetable</li>
+                <li><strong>Temper</strong> — take the bird out ~30 min before roasting to take the chill off</li>
+                <li><strong>Roast</strong> — 325°F / 165°C, USDA weight timetable; tent with foil if the skin browns too fast</li>
                 <li><strong>Check</strong> — pull at 165°F internal temperature</li>
                 <li><strong>Rest</strong> — 45 minutes before carving</li>
             </ol>
+
+            <div class="side-schedule-head">
+                <h3>Side-Dish Start Times</h3>
+                <span class="side-schedule-sub">Stovetop &amp; counter tasks — the oven is busy with the bird</span>
+            </div>
+            <ul class="side-schedule" id="side-schedule"></ul>
 
             <div class="cal-footer">
                 <button type="button" class="btn-outline" id="ics-download">Download calendar file (.ics)</button>
@@ -403,6 +417,9 @@
             <p class="serving-hint" id="turkey-breast-hint" hidden>
                 🦃 Cooking for just 1–2? Skip the whole bird — a <strong>roast turkey breast</strong> (bone-in, ~0.75–1 lb per person) is easier, faster, and there's still plenty for sandwiches. A 3 lb breast feeds two with leftovers.
             </p>
+            <p class="serving-hint" id="two-bird-hint" hidden>
+                🦃 <strong>Birds over 24 lb are rare and cook unevenly.</strong> Consider <strong>two smaller turkeys</strong> <span id="two-bird-split"></span>, or one turkey plus a <strong>baked ham</strong> — smaller birds roast faster and more evenly, and a ham frees up oven space while everyone still gets white meat.
+            </p>
         </section>
 
         <!-- SEO Content: What is → Key Features → How to Use → Why Choose → FAQ -->
@@ -425,6 +442,8 @@
                 </h2>
                 <h3>Reverse schedule timeline</h3>
                 <p>Most <strong>turkey calculators</strong> only tell you how long to cook. HostCalc Pro subtracts resting, roasting and thawing time from your dinner time and tells you exactly when to start each step — no mental math.</p>
+                <h3>Side-dish start times, not just the turkey</h3>
+                <p>Each side gets its own countdown: when to simmer the cranberry sauce (a day ahead), when to start the potatoes, when to warm the rolls during the rest window — so everything lands on the table hot at the same minute.</p>
                 <h3>Grocery list scaled per person</h3>
                 <p>Turkey, stuffing, potatoes, veggie sides, cranberry sauce, cheese, appetizers, dinner rolls, pies and wine — each sized from per-person portion rules, in practical shopping units (lbs, oz, pieces, bottles).</p>
                 <h3>Leftover planning built in</h3>
@@ -552,6 +571,9 @@
             };
             const icsButton = document.getElementById('ics-download');
             const breastHint = document.getElementById('turkey-breast-hint');
+            const sideScheduleEl = document.getElementById('side-schedule');
+            const twoBirdHint = document.getElementById('two-bird-hint');
+            const twoBirdSplit = document.getElementById('two-bird-split');
             const shareButton = document.getElementById('share-plan');
             const restoreHint = document.getElementById('restore-hint');
             const restoreDesc = document.getElementById('restore-desc');
@@ -572,7 +594,7 @@
 
                 const leftoverMode = leftoverRadios.find(r => r.checked)?.value || 'none';
 
-                const { grocery, timeline: tl } = planFeast({
+                const { grocery, timeline: tl, sides } = planFeast({
                     adults: inputs.adults.value,
                     children: inputs.children.value,
                     bigEaters: inputs.bigEaters.value,
@@ -602,6 +624,13 @@
                     + (parseInt(inputs.children.value) || 0);
                 breastHint.hidden = headcount > 2;
 
+                // A''. Big-party tip: birds over 24 lb are rare and cook unevenly
+                const overWeight = grocery.turkeyLbs > 24;
+                twoBirdHint.hidden = !overWeight;
+                twoBirdSplit.textContent = overWeight
+                    ? `(about ${formatNum(grocery.turkeyLbs / 2)} lb each)`
+                    : '';
+
                 // D. Remember this plan for next year's host (you)
                 try {
                     localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -618,6 +647,22 @@
                 timeline.ovenDate.textContent = formatDate(tl.ovenAt);
                 timeline.thawDate.textContent = formatDate(tl.thawAt);
                 timeline.thawDays.textContent = formatNum(tl.thawDays);
+
+                // B'. Side-dish start times: day-before items get a weekday
+                // label, same-day items just the clock time
+                const sameDayFmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+                sideScheduleEl.innerHTML = '';
+                for (const side of sides) {
+                    const isAhead = side.startAt.getTime() < targetDinnerTime.getTime() - 20 * 60 * 60 * 1000;
+                    const when = isAhead
+                        ? new Intl.DateTimeFormat('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(side.startAt)
+                        : sameDayFmt.format(side.startAt);
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="side-time">${when}</span>` +
+                        `<span class="side-name">${side.icon} ${side.name}</span>` +
+                        `<span class="side-action">${side.action}</span>`;
+                    sideScheduleEl.appendChild(li);
+                }
 
                 // C. Calendar links follow the current plan
                 const events = milestoneEvents({ grocery, timeline: tl }, targetDinnerTime);
@@ -711,8 +756,10 @@
                 } catch (err) { /* private mode / corrupt data */ }
             }
 
-            // If the hardcoded default has gone stale (in the past), jump to the nearest Thanksgiving
-            if (new Date(inputs.time.value) < new Date()) {
+            // Default the target time to the visitor's nearest Thanksgiving
+            // (Canadian visitors: 2nd Monday of October; others: US 4th
+            // Thursday of November), unless a shared link already set one.
+            if (!urlParams.has('t')) {
                 inputs.time.value = toInputValue(nearestThanksgiving());
             }
 

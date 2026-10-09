@@ -50,6 +50,30 @@
     const THAW_DAYS_PER_LB = 1 / 4;   // fridge thaw: 1 day per 4 lbs
     const WATER_THAW_MIN_PER_LB = 30; // cold-water thaw: 30 min per lb, change water every 30 min
 
+    /**
+     * Side-dish start times. `leadMin` = minutes before sit-down time to
+     * START the task. Stovetop and counter tasks assume the oven is busy
+     * with the turkey; oven sides finish during the 45-minute rest window.
+     */
+    const SIDE_SCHEDULE = [
+        { key: 'cranberry', icon: '🔴', name: 'Cranberry sauce', leadMin: 24 * 60,
+          action: 'Simmer 15 min, then chill — even better made a day ahead' },
+        { key: 'pies', icon: '🥧', name: 'Pies', leadMin: 24 * 60,
+          action: 'Bake the day before and serve at room temperature' },
+        { key: 'stuffing', icon: '🍞', name: 'Stuffing', leadMin: 80,
+          action: 'Sauté aromatics, toss with bread & stock, bake ~60 min at 350°F' },
+        { key: 'potatoes', icon: '🥔', name: 'Mashed potatoes', leadMin: 75,
+          action: 'Peel & quarter, boil ~30 min, mash with warm milk & butter' },
+        { key: 'cheese', icon: '🧀', name: 'Cheese board', leadMin: 45,
+          action: 'Set out early — cheese is best at room temperature' },
+        { key: 'veggies', icon: '🥦', name: 'Veggie sides', leadMin: 40,
+          action: 'Sauté or roast while the turkey rests (~30 min)' },
+        { key: 'appetizers', icon: '🫒', name: 'Appetizers', leadMin: 30,
+          action: 'Set out with drinks as guests arrive' },
+        { key: 'rolls', icon: '🥐', name: 'Dinner rolls', leadMin: 25,
+          action: 'Warm in the oven during the rest window (10–15 min)' }
+    ];
+
     /** Cold-water thaw time in minutes (submerge in cold water, change it every 30 min). */
     const coldWaterThawMinutes = (lbs) => lbs * WATER_THAW_MIN_PER_LB;
 
@@ -99,17 +123,49 @@
         `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
         `T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
-    /** Thanksgiving = 4th Thursday of November, dinner at 4:00 PM. */
+    /** US Thanksgiving = 4th Thursday of November, dinner at 4:00 PM. */
     const thanksgivingOf = (year) => {
         const first = new Date(year, 10, 1);
         const firstThursday = 1 + ((4 - first.getDay() + 7) % 7);
         return new Date(year, 10, firstThursday + 21, 16, 0);
     };
 
-    /** The upcoming (or current year's) Thanksgiving, relative to `now`. */
-    const nearestThanksgiving = (now = new Date()) => {
-        const thisYear = thanksgivingOf(now.getFullYear());
-        return now > thisYear ? thanksgivingOf(now.getFullYear() + 1) : thisYear;
+    /** Canadian Thanksgiving = 2nd Monday of October, dinner at 4:00 PM. */
+    const canadianThanksgivingOf = (year) => {
+        const first = new Date(year, 9, 1);
+        const firstMonday = 1 + ((1 - first.getDay() + 7) % 7);
+        return new Date(year, 9, firstMonday + 7, 16, 0);
+    };
+
+    // IANA timezones used in Canada (for the CA default date).
+    const CA_TIMEZONES = new Set([
+        'America/Toronto', 'America/Montreal', 'America/Vancouver',
+        'America/Winnipeg', 'America/Edmonton', 'America/Calgary',
+        'America/Halifax', 'America/St_Johns', 'America/Moncton',
+        'America/Regina', 'America/Saskatoon', 'America/Whitehorse',
+        'America/Yellowknife', 'America/Iqaluit', 'America/Thunder_Bay',
+        'America/Glace_Bay', 'America/Dawson', 'America/Creston'
+    ]);
+
+    /** Best guess: is this visitor's browser in a Canadian timezone? */
+    const isCanadianTimezone = () => {
+        try {
+            return CA_TIMEZONES.has(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        } catch (err) { return false; }
+    };
+
+    /**
+     * The upcoming (or current year's) Thanksgiving, relative to `now`.
+     * `region` defaults to auto-detection from the browser timezone:
+     * Canadian visitors get the 2nd Monday of October, everyone else
+     * the US 4th Thursday of November. Pass 'CA' or 'US' to override
+     * (Node tests should pass an explicit region).
+     */
+    const nearestThanksgiving = (now = new Date(), region = undefined) => {
+        const r = region || (isCanadianTimezone() ? 'CA' : 'US');
+        const holidayOf = r === 'CA' ? canadianThanksgivingOf : thanksgivingOf;
+        const thisYear = holidayOf(now.getFullYear());
+        return now > thisYear ? holidayOf(now.getFullYear() + 1) : thisYear;
     };
 
     /* --- Core engine --- */
@@ -177,7 +233,12 @@
             cookMinutes
         };
 
-        return { equivalentAdults: E, grocery, timeline };
+        /* --- C. Side-dish start times (when to start each side) --- */
+        const sides = SIDE_SCHEDULE
+            .map((s) => ({ ...s, startAt: new Date(target.getTime() - s.leadMin * MINUTE_MS) }))
+            .sort((a, b) => b.startAt - a.startAt);
+
+        return { equivalentAdults: E, grocery, timeline, sides };
     }
 
     /* --- Practical retail units --- */
@@ -328,9 +389,12 @@
         roastMinutesForWeight,
         toInputValue,
         thanksgivingOf,
+        canadianThanksgivingOf,
+        isCanadianTimezone,
         nearestThanksgiving,
         planFeast,
         practicalNotes,
+        SIDE_SCHEDULE,
         formatNum,
         formatDate,
         buildGoogleCalendarUrl,

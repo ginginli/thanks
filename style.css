@@ -582,9 +582,23 @@ input[type="number"]::-webkit-outer-spin-button {
 .side-schedule {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 8px 0 0;
     display: flex;
     flex-direction: column;
+    max-height: 320px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.side-schedule::-webkit-scrollbar {
+    width: 6px;
+}
+
+.side-schedule::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
 }
 
 .side-schedule li {

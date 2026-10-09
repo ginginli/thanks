@@ -1,4 +1,104 @@
+# robots.txt — HostCalc Pro (https://www.hostcalc.pro/)
+
+# --- Default: everyone allowed ---
 User-agent: *
 Allow: /
 
-Sitemap: https://hostcalc.pro/sitemap.xml
+# --- OpenAI (ChatGPT / GPT) ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# --- Anthropic (Claude) ---
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+# --- Google (Gemini / AI Overviews) ---
+# Googlebot and Google-Extended (Gemini training) have no separate crawl,
+# but Google-Extended can be explicitly allowed/disallowed:
+User-agent: Google-Extended
+Allow: /
+
+# --- Perplexity ---
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# --- Meta AI ---
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# --- Apple (Siri / Apple Intelligence) ---
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# --- Microsoft (Copilot, via Bingbot) ---
+User-agent: bingbot
+Allow: /
+
+# --- Amazon (Alexa AI) ---
+User-agent: Amazonbot
+Allow: /
+
+# --- ByteDance (Doubao / TikTok AI) ---
+User-agent: Bytespider
+Allow: /
+
+# --- DuckDuckGo (DuckAssist) ---
+User-agent: DuckAssistBot
+Allow: /
+
+# --- Common Crawl (open dataset used by many AI labs) ---
+User-agent: CCBot
+Allow: /
+
+# --- Cohere ---
+User-agent: cohere-ai
+Allow: /
+
+# --- You.com ---
+User-agent: YouBot
+Allow: /
+
+# --- Diffbot ---
+User-agent: Diffbot
+Allow: /
+
+# --- Webz.io / Omgili ---
+User-agent: Omgili
+Allow: /
+
+User-agent: Omgilibot
+Allow: /
+
+# --- iAsk ---
+User-agent: iaskspider
+Allow: /
+
+# --- LLM / LLM-full (AI crawlers; operator not publicly confirmed) ---
+User-agent: LLM
+Allow: /
+
+User-agent: LLM-full
+Allow: /
+
+Sitemap: https://www.hostcalc.pro/sitemap.xml

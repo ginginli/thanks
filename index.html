@@ -20,10 +20,13 @@
     <meta property="og:title" content="HostCalc Pro - Thanksgiving Feast Planner">
     <meta property="og:description" content="Reverse-engineer your Thanksgiving: thaw timeline, oven schedule, and grocery quantities scaled to your guest count.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hostcalc.pro/">
+    <meta property="og:url" content="https://www.hostcalc.pro/">
     <meta property="og:site_name" content="HostCalc Pro">
+    <meta property="og:image" content="https://www.hostcalc.pro/favicon-192.png">
+    <meta property="og:image:alt" content="HostCalc Pro — Thanksgiving Feast Planner">
     <meta name="twitter:card" content="summary">
-    <link rel="canonical" href="https://hostcalc.pro/">
+    <meta name="twitter:image" content="https://www.hostcalc.pro/favicon-192.png">
+    <link rel="canonical" href="https://www.hostcalc.pro/">
 
     <link rel="icon" href="favicon-48.png" sizes="48x48">
     <link rel="icon" href="favicon-192.png" sizes="192x192">
@@ -38,7 +41,7 @@
         "@type": "WebApplication",
         "name": "HostCalc Pro",
         "alternateName": "Thanksgiving Feast Planner",
-        "url": "https://hostcalc.pro/",
+        "url": "https://www.hostcalc.pro/",
         "dateModified": "2026-10-10",
         "applicationCategory": "LifestyleApplication",
         "operatingSystem": "Any",
@@ -78,7 +81,7 @@
                 "name": "How long does a turkey take to cook?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "At 325°F / 165°C, budget about 15 minutes per pound, then rest the bird for 45 minutes after pulling it at 165°F internal temperature."
+                    "text": "At 325°F / 165°C, follow the USDA weight timetable — roughly 13 minutes per pound for large birds (20+ lb) up to 22 minutes per pound for small ones. Then rest the bird for 45 minutes after pulling it at 165°F internal temperature."
                 }
             },
             {
@@ -107,8 +110,23 @@
         "@type": "WebSite",
         "name": "HostCalc Pro",
         "alternateName": "Thanksgiving Feast Planner",
-        "url": "https://hostcalc.pro/",
+        "url": "https://www.hostcalc.pro/",
         "inLanguage": "en"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "HostCalc Pro",
+        "url": "https://www.hostcalc.pro/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.hostcalc.pro/favicon-192.png",
+            "width": 192,
+            "height": 192
+        }
     }
     </script>
 
@@ -169,21 +187,32 @@
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-dot dot-1"></div>
-                    <div class="timeline-date" id="time-thaw">Sun, Nov 22, 1:33 AM</div>
-                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)</div>
+                    <div class="timeline-date" id="time-thaw">Sun, Nov 22, 1:28 AM</div>
+                    <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)
+                        <a class="cal-link" id="gcal-thaw" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-2"></div>
-                    <div class="timeline-date" id="time-oven">Thu, Nov 26, 10:51 AM</div>
-                    <div class="timeline-desc">Put turkey in oven at 325°F / 165°C</div>
+                    <div class="timeline-date" id="time-oven">Thu, Nov 26, 10:46 AM</div>
+                    <div class="timeline-desc">Put turkey in oven at 325°F / 165°C
+                        <a class="cal-link" id="gcal-oven" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
                 </div>
 
                 <div class="timeline-item">
                     <div class="timeline-dot dot-3"></div>
                     <div class="timeline-date" id="time-rest">Thu, Nov 26, 3:15 PM</div>
-                    <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)</div>
+                    <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)
+                        <a class="cal-link" id="gcal-rest" href="#" target="_blank" rel="noopener">+ Google Calendar</a>
+                    </div>
                 </div>
+            </div>
+
+            <div class="cal-footer">
+                <button type="button" class="btn-outline" id="ics-download">Download calendar file (.ics)</button>
+                <span class="cal-hint">All 4 events with pop-up reminders — imports into Google, Apple or Outlook Calendar</span>
             </div>
         </section>
 
@@ -213,7 +242,7 @@
                 <div class="grocery-card">
                     <div class="g-icon">🥔</div>
                     <div class="g-name">Potatoes</div>
-                    <div class="g-value"><span id="g-potatoes">3.1</span> <span class="g-unit">lbs</span></div>
+                    <div class="g-value"><span id="g-potatoes">3.0</span> <span class="g-unit">lbs</span></div>
                 </div>
 
                 <div class="grocery-card">
@@ -255,7 +284,7 @@
                 <div class="grocery-card">
                     <div class="g-icon">🍷</div>
                     <div class="g-name">Wine</div>
-                    <div class="g-value"><span id="g-wine">5.6</span> <span class="g-unit">btls</span></div>
+                    <div class="g-value"><span id="g-wine">7.6</span> <span class="g-unit">btls</span></div>
                 </div>
 
             </div>
@@ -325,7 +354,7 @@
                 <p>Fridge thawing takes about <strong>one day per 4 lbs</strong>, so a 17.6 lb turkey needs roughly 4.4 days, per the <a href="https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/turkey-farm-table" target="_blank" rel="noopener">USDA safe thawing guide</a>. HostCalc Pro back-calculates the exact date and time from your dinner time.</p>
 
                 <h3>How long does a turkey take to cook?</h3>
-                <p>At 325 °F / 165 °C, budget about <strong>15 minutes per pound</strong>, then rest the bird for 45 minutes after pulling it at 165 °F internal temperature — the safe minimum recommended by the <a href="https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/turkey-basics-safe-cooking" target="_blank" rel="noopener">USDA FSIS</a>.</p>
+                <p>At 325 °F / 165 °C, we follow the <strong>USDA weight timetable</strong> — roughly 13 minutes per pound for large birds (20+ lb) up to 22 minutes per pound for small ones — then rest the bird for 45 minutes after pulling it at 165 °F internal temperature, the safe minimum recommended by the <a href="https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/turkey-basics-safe-cooking" target="_blank" rel="noopener">USDA FSIS</a>.</p>
 
                 <h3>Do children eat as much as adults?</h3>
                 <p>No — each child under 12 is counted as half an adult across the grocery list, except for dinner rolls (one per child) and wine (adults only).</p>
@@ -342,9 +371,12 @@
 
     </div>
 
+    <script src="calculator.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
+            const { planFeast, nearestThanksgiving, toInputValue, formatNum, formatDate,
+                    buildGoogleCalendarUrl, buildICS, milestoneEvents } = ThanksgivingPlanner;
+
             // 1. Map all interactive DOM elements
             const inputs = {
                 adults: document.getElementById('adults'),
@@ -373,43 +405,18 @@
                 restDate: document.getElementById('time-rest')
             };
 
-            // 2. Helper formatters
-            const formatNum = (num, decimals = 1) => Number(num.toFixed(decimals));
-            
-            const formatDate = (dateObj) => {
-                // E.g., "Tue, Nov 24, 2:00 PM"
-                return new Intl.DateTimeFormat('en-US', {
-                    weekday: 'short',
-                    month: 'short', 
-                    day: 'numeric', 
-                    hour: 'numeric', 
-                    minute: '2-digit'
-                }).format(dateObj);
+            const gcalLinks = {
+                thaw: document.getElementById('gcal-thaw'),
+                oven: document.getElementById('gcal-oven'),
+                rest: document.getElementById('gcal-rest')
             };
+            const icsButton = document.getElementById('ics-download');
 
-            // Thanksgiving = 4th Thursday of November, dinner at 4:00 PM
-            const pad = (n) => String(n).padStart(2, '0');
-            const toInputValue = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            // Latest plan, kept for the .ics download button
+            let currentPlan = null;
 
-            const thanksgivingOf = (year) => {
-                const first = new Date(year, 10, 1);
-                const firstThursday = 1 + ((4 - first.getDay() + 7) % 7);
-                return new Date(year, 10, firstThursday + 21, 16, 0);
-            };
-
-            const nearestThanksgiving = () => {
-                const now = new Date();
-                const thisYear = thanksgivingOf(now.getFullYear());
-                return now > thisYear ? thanksgivingOf(now.getFullYear() + 1) : thisYear;
-            };
-
-            // 3. Core Calculation Engine
+            // 2. Core Calculation Engine (pure logic lives in calculator.js)
             const calculateAll = () => {
-                // Parse inputs
-                const A = parseInt(inputs.adults.value) || 0;
-                const C = parseInt(inputs.children.value) || 0;
-                const wantsLeftovers = inputs.leftovers.checked;
-                
                 // Fallback to the nearest Thanksgiving if input is cleared/invalid
                 let targetDinnerTime = new Date(inputs.time.value);
                 if (isNaN(targetDinnerTime.getTime())) {
@@ -417,67 +424,59 @@
                     inputs.time.value = toInputValue(targetDinnerTime);
                 }
 
-                // Equivalent Adults (Children eat roughly half)
-                const E = A + (C / 2);
-                const leftoverMultiplier = wantsLeftovers ? 1.3 : 1.0;
+                const { grocery, timeline: tl } = planFeast({
+                    adults: inputs.adults.value,
+                    children: inputs.children.value,
+                    leftovers: inputs.leftovers.checked,
+                    dinnerTime: targetDinnerTime
+                });
 
-                /* --- A. GROCERY CALCULATIONS --- */
-                // Turkey: 1.5 lbs per equivalent adult
-                const turkeyLbs = E * 1.5 * leftoverMultiplier;
-                outputs.turkey.textContent = formatNum(turkeyLbs);
+                // A. Groceries
+                outputs.turkey.textContent = formatNum(grocery.turkeyLbs);
+                outputs.stuffing.textContent = formatNum(grocery.stuffingLbs);
+                outputs.potatoes.textContent = formatNum(grocery.potatoesLbs);
+                outputs.veggies.textContent = formatNum(grocery.veggiesOz);
+                outputs.cranberry.textContent = formatNum(grocery.cranberryFlOz);
+                outputs.cheese.textContent = formatNum(grocery.cheeseOz);
+                outputs.appetizers.textContent = formatNum(grocery.appetizers);
+                outputs.rolls.textContent = grocery.rolls;
+                outputs.pies.textContent = grocery.pies;
+                outputs.wine.textContent = formatNum(grocery.wineBottles);
 
-                // Stuffing: ~0.25 lbs per person
-                outputs.stuffing.textContent = formatNum(E * 0.25);
-                
-                // Potatoes: ~0.35 lbs per person
-                outputs.potatoes.textContent = formatNum(E * 0.35);
-                
-                // Veggie Sides: ~3.5 oz per person
-                outputs.veggies.textContent = formatNum(E * 3.5);
-                
-                // Cranberry Sauce: ~2 fluid oz per person
-                outputs.cranberry.textContent = formatNum(E * 2.0);
-                
-                // Cheese: ~2 oz per person
-                outputs.cheese.textContent = formatNum(E * 2.0);
-                
-                // Appetizers: 7 pieces per equivalent adult
-                outputs.appetizers.textContent = Math.ceil(E * 7);
-                
-                // Rolls: 2 for adults, 1 for kids
-                outputs.rolls.textContent = (A * 2) + (C * 1);
-                
-                // Pies: 1 pie per 6 equivalent adults
-                outputs.pies.textContent = Math.max(1, Math.ceil(E / 6));
-                
-                // Wine: 0.7 bottles per adult (kids don't drink)
-                outputs.wine.textContent = formatNum(A * 0.7);
+                // B. Timeline
+                timeline.restDate.textContent = formatDate(tl.restAt);
+                timeline.ovenDate.textContent = formatDate(tl.ovenAt);
+                timeline.thawDate.textContent = formatDate(tl.thawAt);
+                timeline.thawDays.textContent = formatNum(tl.thawDays);
 
-                /* --- B. TIMELINE REVERSE ENGINEERING --- */
-                // 1. Resting Time (always 45 mins)
-                const restTimeMs = 45 * 60000;
-                const timeToRest = new Date(targetDinnerTime.getTime() - restTimeMs);
-                
-                // 2. Oven Time (15 mins per lb of total turkey weight)
-                const cookTimeMs = turkeyLbs * 15 * 60000;
-                const timeToOven = new Date(timeToRest.getTime() - cookTimeMs);
-                
-                // 3. Thawing Time (Fridge thaw = 24 hrs per 4 lbs = 6 hrs per lb)
-                const thawDays = turkeyLbs / 4;
-                const thawTimeMs = thawDays * 24 * 60 * 60000;
-                const timeToThaw = new Date(timeToOven.getTime() - thawTimeMs);
-
-                /* --- C. UPDATE TIMELINE DOM --- */
-                timeline.restDate.textContent = formatDate(timeToRest);
-                timeline.ovenDate.textContent = formatDate(timeToOven);
-                timeline.thawDate.textContent = formatDate(timeToThaw);
-                timeline.thawDays.textContent = formatNum(thawDays);
+                // C. Calendar links follow the current plan
+                const events = milestoneEvents({ grocery, timeline: tl }, targetDinnerTime);
+                gcalLinks.thaw.href = buildGoogleCalendarUrl(events[0]);
+                gcalLinks.oven.href = buildGoogleCalendarUrl(events[1]);
+                gcalLinks.rest.href = buildGoogleCalendarUrl(events[2]);
+                currentPlan = { grocery, timeline: tl, dinnerTime: targetDinnerTime };
             };
 
-            // 4. Attach Event Listeners for real-time reactivity
+            // 3. Attach Event Listeners for real-time reactivity
             Object.values(inputs).forEach(inputElement => {
                 inputElement.addEventListener('input', calculateAll);
                 inputElement.addEventListener('change', calculateAll);
+            });
+
+            // .ics download: bundle all milestones (plus reminders) into one file
+            icsButton.addEventListener('click', () => {
+                if (!currentPlan) return;
+                const events = milestoneEvents(
+                    { grocery: currentPlan.grocery, timeline: currentPlan.timeline },
+                    currentPlan.dinnerTime
+                );
+                const blob = new Blob([buildICS(events)], { type: 'text/calendar;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'thanksgiving-plan.ics';
+                link.click();
+                URL.revokeObjectURL(url);
             });
 
             // If the hardcoded default has gone stale (in the past), jump to the nearest Thanksgiving

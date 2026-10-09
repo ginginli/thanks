@@ -343,6 +343,53 @@ input:checked + .slider:before { transform: translateX(20px); }
     margin-top: 4px;
 }
 
+.cal-link {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-step-2);
+    text-decoration: none;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.cal-link:hover {
+    text-decoration: underline;
+}
+
+.cal-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-input-bg);
+}
+
+.btn-outline {
+    appearance: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 9px 16px;
+    border: 1.5px solid var(--color-step-2);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--color-step-2);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline:hover {
+    background-color: var(--color-step-2);
+    color: #FFFFFF;
+}
+
+.cal-hint {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+}
+
 .results-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

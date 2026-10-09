@@ -1,10 +1,10 @@
 # HostCalc Pro
 
-> Free online Thanksgiving calculator that works backwards from your dinner time: enter adults, children (half portions) and big eaters like teens (1.5 portions), and get a reverse-engineered cooking timeline (thaw, temper, oven, rest) plus per-side-dish start times and a grocery list scaled to your exact headcount. Three leftover modes from "just enough" to +50% for to-go plates. Defaults to the Canadian or US Thanksgiving date based on the visitor's timezone. All math runs locally in the browser — no sign-up, nothing uploaded.
+> Free online Thanksgiving calculator that works backwards from your dinner time: enter adults, children (half portions) and big eaters like teens (1.5 portions), and get a reverse-engineered cooking timeline (thaw, temper, oven, rest) plus per-side-dish start times and a grocery list scaled to your exact headcount. Three leftover modes from "just enough" to +50% for to-go plates. Supports cook-from-frozen birds (flip the Frozen bird toggle in the timeline: thaw and temper steps disappear, roast time scales +50%). Defaults to the Canadian or US Thanksgiving date based on the visitor's timezone. All math runs locally in the browser — no sign-up, nothing uploaded.
 
 Main content:
 
-- [Thanksgiving Feast Planner](https://www.hostcalc.pro/): The interactive calculator — reverse schedule timeline, side-dish start times, per-person grocery quantities in retail units, three-tier leftover planning, big-eater scaling, turkey-size coaching (breast for 1–2, two birds over 24 lb), shareable plan links, and one-click calendar reminders (.ics / Google Calendar).
+- [Thanksgiving Feast Planner](https://www.hostcalc.pro/): The interactive calculator — reverse schedule timeline, frozen-bird mode, side-dish start times, per-person grocery quantities in retail units, three-tier leftover planning, big-eater scaling, turkey-size coaching (breast for 1–2, two birds over 24 lb), shareable plan links, and one-click calendar reminders (.ics / Google Calendar).
 
 Blog:
 

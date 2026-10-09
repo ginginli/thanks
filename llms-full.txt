@@ -14,7 +14,7 @@ Think of it as a scaffold for first-time hosts, not a prophecy: the math gets yo
 
 ### Reverse schedule timeline
 
-Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting, tempering and thawing time from your dinner time and tells you exactly when to start each step — no mental math. Cooking a cook-from-frozen bird? Flip the "Frozen bird" toggle: the thaw and temper milestones disappear, the roast time scales by +50%, and the calendar events update automatically.
+Most turkey calculators only tell you how long to cook. HostCalc Pro subtracts resting, roasting, tempering and thawing time from your dinner time and tells you exactly when to start each step — no mental math. Cooking a cook-from-frozen bird? Flip the "Frozen bird" toggle in the timeline card: the thaw and temper milestones disappear, the roast time scales by +50%, and the calendar events update automatically.
 
 ### Side-dish start times, not just the turkey
 
@@ -42,7 +42,7 @@ Teens and athletes count as 1.5 adults' worth of food each, via a dedicated Big 
 ### Shareable plan links & one-click calendars
 
 - "Share this plan" copies a link with your numbers baked in — hand it to next year's host.
-- Every milestone — thaw, temper, oven, rest — links straight to Google Calendar, or download all 5 events (with pop-up reminders) as an .ics file for Google, Apple or Outlook.
+- Every milestone — thaw, temper, oven, rest — links straight to Google Calendar, or download all events (with pop-up reminders) as an .ics file for Google, Apple or Outlook.
 - Your latest plan is saved on your own device (localStorage) and offered back next visit.
 
 ### Real-time, right in your browser
@@ -54,6 +54,7 @@ Every input recalculates the timeline and grocery targets instantly. Nothing is 
 1. Enter your headcount — adults, children under 12 (half portions), and big eaters like teens and athletes (1.5 portions each).
 2. Set your target dinner time — it defaults to the nearest Thanksgiving dinner at 4:00 PM (Canadian Thanksgiving for Canadian visitors, otherwise the US 4th Thursday of November) and snaps back if cleared.
 3. Pick a leftover mode, then read your reverse schedule, side-dish start times and grocery targets. Everything updates live as you type.
+4. If you're cooking a frozen bird, flip the "Frozen bird" toggle in the timeline card — the thaw and temper steps are removed and the roast time adjusts automatically.
 
 ## Why Choose HostCalc Pro?
 
@@ -82,18 +83,24 @@ Per equivalent adult (children under 12 count as 0.5, big eaters like teens and 
 ### Reverse schedule rules
 
 - Resting: pull the bird 45 minutes before dinner, at 165 °F internal temperature.
-- Roasting: at 325 °F / 165 °C following the USDA weight timetable — about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds. Tent with foil if the skin browns too fast.
-- Tempering: take the bird out of the fridge 30 minutes before it goes into the oven (a timeline milestone with its own calendar reminder; never leave it out longer than two hours).
-- Thawing: fridge thaw takes one day per 4 lbs of turkey, ending when the temper step begins (the cold-water alternative is 30 minutes per pound, changing the water every 30 minutes).
+- Roasting: at 325 °F / 165 °C following the USDA weight timetable — about 13 minutes per pound for a 20+ lb bird, up to 22 minutes per pound for small birds. For a frozen bird, roast time scales by approximately +50% with no thaw or temper step.
+- Tempering: take the bird out of the fridge 30 minutes before it goes into the oven (skipped when cooking from frozen).
+- Thawing: fridge thaw takes one day per 4 lbs of turkey, ending when the temper step begins. Skipped when cooking from frozen.
 - Canadian Thanksgiving is the 2nd Monday of October; US Thanksgiving is the 4th Thursday of November (dinner at 4:00 PM by default).
 
-### Five steps from freezer to table
+### Five steps from freezer to table (fresh/thawed bird)
 
 1. **Thaw** — move to the fridge, one day per 4 lbs.
 2. **Temper** — out of the fridge ~30 minutes before roasting.
 3. **Roast** — 325 °F / 165 °C, USDA weight timetable.
 4. **Check** — pull at 165 °F internal temperature.
 5. **Rest** — 45 minutes before carving.
+
+### Three steps from freezer to table (frozen bird)
+
+1. **Roast** — straight from the freezer at 325 °F / 165 °C, ~50% more roast time than a thawed bird.
+2. **Check** — pull at 165 °F internal temperature.
+3. **Rest** — 45 minutes before carving.
 
 ## FAQ
 

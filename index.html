@@ -266,17 +266,6 @@
                 </div>
             </div>
 
-            <div class="toggle-row">
-                <div>
-                    <span class="toggle-text">Frozen bird (cook straight from the freezer)</span>
-                    <span class="toggle-subtext">Skips the thaw entirely — safe per the USDA, just ~50% more roast time</span>
-                </div>
-                <label class="side-toggle">
-                    <input type="checkbox" id="cook-frozen" aria-label="Cook the turkey straight from frozen">
-                    <span class="side-toggle-track" aria-hidden="true"><span class="side-toggle-thumb"></span></span>
-                </label>
-            </div>
-
             <div class="share-row">
                 <button type="button" class="share-btn" id="share-plan">🔗 Share this plan</button>
                 <span class="share-subtext">Copy a link with your numbers — hand it to next year's host</span>
@@ -294,6 +283,17 @@
                 Reverse Schedule Timeline
             </h2>
 
+            <div class="toggle-row toggle-row-frozen">
+                <div>
+                    <span class="toggle-text">Frozen bird (cook straight from the freezer)</span>
+                    <span class="toggle-subtext">Skips the thaw entirely — just ~50% more roast time</span>
+                </div>
+                <label class="side-toggle">
+                    <input type="checkbox" id="cook-frozen" aria-label="Cook the turkey straight from frozen">
+                    <span class="side-toggle-track" aria-hidden="true"><span class="side-toggle-thumb"></span></span>
+                </label>
+            </div>
+
             <div class="timeline">
                 <div class="timeline-item" id="item-thaw">
                     <div class="timeline-dot dot-1"></div>
@@ -302,7 +302,7 @@
                     </div>
                     <div class="timeline-desc">Move turkey to fridge to thaw (<span id="days-thaw">4.4</span> days)
                     </div>
-                    <div class="timeline-note">Fridge thaw needs about one day per 4 lb. ⚠️ Check the packaging first: some turkeys are sold as <strong>cook-from-frozen</strong> — those skip this thaw step and go straight from freezer to oven (add ~50% more roast time).</div>
+
                 </div>
 
                 <div class="timeline-item" id="item-temper">
@@ -312,7 +312,7 @@
                     </div>
                     <div class="timeline-desc">Take turkey out of the fridge to temper (30 mins)
                     </div>
-                    <div class="timeline-note">A short counter rest helps the bird cook evenly — 30 minutes is enough; never leave it out longer than two hours (food safety).</div>
+
                 </div>
 
                 <div class="timeline-item">
@@ -322,7 +322,7 @@
                     </div>
                     <div class="timeline-desc">Put turkey in oven at 325°F / 165°C<span id="frozen-tag" hidden> — straight from the freezer, no thaw needed</span>
                     </div>
-                    <div class="timeline-note">Follow the USDA weight timetable for this bird. If the skin browns too quickly, tent it loosely with foil.</div>
+
                 </div>
 
                 <div class="timeline-item">
@@ -332,7 +332,7 @@
                     </div>
                     <div class="timeline-desc">Take out at 165°F internal temp and let rest (45 mins)
                     </div>
-                    <div class="timeline-note">Pull when the thickest part of the breast reaches 165°F, then rest 45 minutes so the juices redistribute before carving.</div>
+
                 </div>
             </div>
 

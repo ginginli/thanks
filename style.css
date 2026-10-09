@@ -102,6 +102,9 @@
     padding: 0;
 }
 
+/* Protect the HTML hidden attribute from being overridden by display rules */
+[hidden] { display: none !important; }
+
 body {
     background-color: var(--color-bg);
     background-image:
@@ -162,6 +165,12 @@ header p {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.14em;
+}
+
+@media (min-width: 1000px) {
+    header p {
+        font-size: 0.9rem;
+    }
 }
 
 .card {
@@ -322,6 +331,13 @@ input[type="number"]::-webkit-outer-spin-button {
     padding-right: 8px;
     scrollbar-width: thin;
     scrollbar-color: var(--color-border) transparent;
+}
+
+@media (min-width: 1000px) {
+    .timeline {
+        max-height: none;
+        overflow-y: visible;
+    }
 }
 
 .timeline::-webkit-scrollbar {
@@ -644,6 +660,12 @@ input[type="number"]::-webkit-outer-spin-button {
     gap: 16px;
 }
 
+@media (min-width: 1000px) {
+    .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+}
+
 .serving-hint {
     margin-top: 16px;
     padding: 12px 16px;
@@ -795,23 +817,32 @@ header a,
 
 .prose li::marker { color: var(--color-primary); font-weight: 700; }
 
-/* Desktop: two-column layout — reverse timeline (key feature) stays sticky while you scroll the grocery list */
+/* Desktop: three-zone layout
+   Left col  → params + groceries (主交互流)
+   Right col → timeline sticky     (始终可见的时间线)
+   Full row  → seo-content + footer
+*/
 @media (min-width: 1000px) {
     .container {
-        max-width: 960px;
+        max-width: 1080px;
         display: grid;
-        grid-template-columns: 1fr 400px;
+        grid-template-columns: 1fr 380px;
+        grid-template-rows: auto auto auto auto auto;
         grid-template-areas:
             "header    header"
             "params    timeline"
-            "groceries timeline";
+            "groceries timeline"
+            "seo       seo"
+            "foot      foot";
         align-items: start;
+        column-gap: 28px;
     }
-    header { grid-area: header; }
-    #step-params { grid-area: params; }
+    header        { grid-area: header; }
+    #step-params  { grid-area: params; }
     #step-groceries { grid-area: groceries; }
-    #seo-content { grid-column: 1 / -1; }
-    footer { grid-column: 1 / -1; }
+    #seo-content  { grid-area: seo; }
+    footer        { grid-area: foot; }
+
     #step-timeline {
         grid-area: timeline;
         align-self: start;
@@ -819,6 +850,24 @@ header a,
         top: 24px;
         border: 1px solid rgba(229, 96, 32, 0.18);
         box-shadow: 0 10px 32px rgba(229, 96, 32, 0.08);
+        z-index: 0;
+        /* timeline 不受 groceries 高度拉伸，只占自然高度 */
+        max-height: calc(100vh - 48px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    /* SEO prose 内容：两栏平铺，每栏合理宽度 */
+    #seo-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    /* "What is" 和 FAQ 占满整行（内容较长） */
+    #seo-content .card:first-child,
+    #seo-content .card:last-child {
+        grid-column: 1 / -1;
     }
 }
 
